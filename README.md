@@ -92,7 +92,7 @@ git clone https://github.com/byheaven/xhs-publisher.git
 如果你想将自己的插件添加到此 Market：
 
 1. Fork 此仓库
-2. 在 `market.json` 中添加你的插件信息
+2. 在 `.claude-plugin/marketplace.json` 中添加你的插件信息
 3. 更新 `README.md`
 4. 提交 Pull Request
 
