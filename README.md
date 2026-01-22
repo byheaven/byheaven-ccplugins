@@ -27,37 +27,41 @@
 
 ## 🚀 如何安装插件
 
-### 方法 1: Git Clone（推荐）
+### 方法 1: 通过 Plugin Marketplace（推荐）
+
+```bash
+# 1. 添加 ByHeaven Plugin Marketplace
+claude plugin marketplace add https://github.com/byheaven/byheaven-ccplugins
+
+# 2. 安装插件
+claude plugin install xhs-publisher
+
+# 插件会自动安装到 ~/.claude/plugins/ 目录
+```
+
+### 方法 2: 直接从 GitHub 安装
+
+```bash
+# 安装单个插件（从 GitHub 仓库）
+claude plugin install byheaven/xhs-publisher
+```
+
+### 方法 3: Git Clone
 
 ```bash
 # 克隆插件仓库到 Claude 插件目录
 cd ~/.claude/plugins/
 git clone https://github.com/byheaven/xhs-publisher.git
 
-# 重启 Claude Code 或重新加载插件
+# 重启 Claude Code 或使用 claude plugin list 查看
 ```
 
-### 方法 2: 手动下载
+### 方法 4: 手动下载
 
 1. 访问 [xhs-publisher releases](https://github.com/byheaven/xhs-publisher/releases)
 2. 下载最新版本的压缩包
 3. 解压到 `~/.claude/plugins/xhs-publisher/`
 4. 重启 Claude Code
-
-### 方法 3: 通过 Claude Code 配置
-
-在 Claude Code 的插件配置中添加：
-
-```json
-{
-  "plugins": [
-    {
-      "source": "git",
-      "repository": "https://github.com/byheaven/xhs-publisher.git"
-    }
-  ]
-}
-```
 
 ## 📋 插件列表
 
