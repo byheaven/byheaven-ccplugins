@@ -19,44 +19,44 @@
 - ✅ 智能生成标签
 - ✅ 安全发布策略（用户最终确认）
 
-**安装**:
-```bash
-# 通过 GitHub 安装
-cc plugin install byheaven/xhs-publisher
-```
+**安装**: 参见下方安装方法
 
 **仓库**: [github.com/byheaven/xhs-publisher](https://github.com/byheaven/xhs-publisher)
 
 ---
 
-## 🚀 如何使用此 Plugin Market
+## 🚀 如何安装插件
 
-### 方法 1: 通过 Market URL 安装（推荐）
-
-```bash
-# 添加 ByHeaven Plugin Market
-cc market add https://github.com/byheaven/byheaven-ccplugins
-
-# 查看可用插件
-cc market search byheaven
-
-# 安装插件
-cc plugin install xhs-publisher
-```
-
-### 方法 2: 直接从 GitHub 安装
+### 方法 1: Git Clone（推荐）
 
 ```bash
-# 安装单个插件
-cc plugin install byheaven/xhs-publisher
-```
-
-### 方法 3: 手动安装
-
-```bash
-# 克隆插件仓库到本地插件目录
+# 克隆插件仓库到 Claude 插件目录
 cd ~/.claude/plugins/
 git clone https://github.com/byheaven/xhs-publisher.git
+
+# 重启 Claude Code 或重新加载插件
+```
+
+### 方法 2: 手动下载
+
+1. 访问 [xhs-publisher releases](https://github.com/byheaven/xhs-publisher/releases)
+2. 下载最新版本的压缩包
+3. 解压到 `~/.claude/plugins/xhs-publisher/`
+4. 重启 Claude Code
+
+### 方法 3: 通过 Claude Code 配置
+
+在 Claude Code 的插件配置中添加：
+
+```json
+{
+  "plugins": [
+    {
+      "source": "git",
+      "repository": "https://github.com/byheaven/xhs-publisher.git"
+    }
+  ]
+}
 ```
 
 ## 📋 插件列表
