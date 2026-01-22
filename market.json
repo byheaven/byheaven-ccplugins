@@ -1,0 +1,31 @@
+{
+  "name": "byheaven-ccplugins",
+  "displayName": "ByHeaven Claude Code Plugins",
+  "description": "A curated collection of Claude Code plugins by ByHeaven",
+  "author": {
+    "name": "yubai",
+    "url": "https://github.com/byheaven"
+  },
+  "repository": "https://github.com/byheaven/byheaven-ccplugins",
+  "plugins": [
+    {
+      "name": "xhs-publisher",
+      "displayName": "小红书自动发布",
+      "description": "自动发布小红书图文内容，支持文字配图和图文笔记两种模式",
+      "repository": "https://github.com/byheaven/xhs-publisher",
+      "author": {
+        "name": "yubai"
+      },
+      "version": "0.1.0",
+      "keywords": [
+        "xiaohongshu",
+        "小红书",
+        "publisher",
+        "automation",
+        "browser-automation"
+      ],
+      "category": "automation"
+    }
+  ],
+  "version": "1.0.0"
+}
