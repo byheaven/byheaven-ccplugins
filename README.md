@@ -4,9 +4,9 @@
 
 English | [中文 README](README.zh-CN.md)
 
-## Skills
+## Plugins
 
-- **xhs-publisher** (`skills/xhs-publisher`) — Xiaohongshu (RED) auto publisher (browser automation)
+- **xhs-publisher** (`plugins/xhs-publisher`) — Xiaohongshu (RED) auto publisher (browser automation)
 
 ## Installation
 
@@ -25,7 +25,7 @@ git clone https://github.com/byheaven/byheaven-skills.git
 cd byheaven-skills
 
 mkdir -p ~/.claude/plugins
-rsync -a skills/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
+rsync -a plugins/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
 ```
 
 ### 2) Add as Claude Code Plugin Marketplace
@@ -58,7 +58,7 @@ After adding the marketplace:
 
 ## Repo structure
 
-Each skill lives under `skills/<name>/` and is intended to be self-contained (it includes its own `.claude-plugin/plugin.json`, `commands/`, `skills/`, etc.).
+Each plugin lives under `plugins/<name>/` and is intended to be self-contained (it includes its own `.claude-plugin/plugin.json`, `commands/`, `skills/`, etc.).
 
 ## License
 

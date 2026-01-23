@@ -1,5 +1,5 @@
 ---
-name: xiaohongshu-publishing
+name: xhs-publisher
 description: 小红书创作者平台发布流程的详细知识和操作步骤
 version: 0.1.0
 ---

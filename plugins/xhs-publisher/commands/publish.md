@@ -378,13 +378,9 @@ tags: [小红书, 发布]
 
 ## 使用技能
 
-本命令会自动调用 `xiaohongshu-publishing` 技能，该技能包含：
-- 小红书创作者平台详细流程
-- DOM 选择器和元素定位
-- 两种发布形式的完整步骤
-- 错误处理和故障排除
+本命令会自动使用本插件内的 skill 文档（包含发布流程、DOM 选择器、两种发布形式步骤、错误处理等）。
 
-参考: `/Users/yubai/.claude/plugins/xhs-publisher/skills/xiaohongshu-publishing/SKILL.md`
+参考: `~/.claude/plugins/xhs-publisher/skills/xhs-publisher/SKILL.md`
 
 ## 示例场景
 

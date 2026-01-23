@@ -7,7 +7,7 @@
       "name": "xhs-publisher",
       "version": "0.1.0",
       "description": "Automatically publishes Xiaohongshu (RED) posts via browser automation (text+images and photo-note modes).",
-      "source": "./skills/xhs-publisher"
+      "source": "./plugins/xhs-publisher"
     }
   ]
 }

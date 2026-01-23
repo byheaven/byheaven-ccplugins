@@ -4,9 +4,9 @@
 
 [English README](README.md)
 
-## Skills
+## Plugins
 
-- **xhs-publisher**（`skills/xhs-publisher`）— 小红书自动发布（浏览器自动化）
+- **xhs-publisher**（`plugins/xhs-publisher`）— 小红书自动发布（浏览器自动化）
 
 ## 安装方式
 
@@ -25,7 +25,7 @@ git clone https://github.com/byheaven/byheaven-skills.git
 cd byheaven-skills
 
 mkdir -p ~/.claude/plugins
-rsync -a skills/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
+rsync -a plugins/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
 ```
 
 ### 2) 添加为 Claude Code 的 Plugin Marketplace
@@ -58,7 +58,7 @@ rsync -a skills/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
 
 ## 仓库结构
 
-每个 skill 位于 `skills/<name>/`，并尽量保持为可独立使用的 Claude Code 插件结构（包含 `.claude-plugin/plugin.json`、`commands/`、`skills/` 等）。
+每个 plugin 位于 `plugins/<name>/`，并尽量保持为可独立使用的 Claude Code 插件结构（包含 `.claude-plugin/plugin.json`、`commands/`、`skills/` 等）。
 
 ## 许可证
 

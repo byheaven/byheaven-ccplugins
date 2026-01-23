@@ -11,7 +11,7 @@ xhs-publisher is a Claude Code plugin for automating content publishing to Xiaoh
 ```
 .claude-plugin/plugin.json  - Plugin manifest
 commands/publish.md         - Main /xhs-publisher:xhs command
-skills/xiaohongshu-publishing/SKILL.md - Platform knowledge (DOM selectors, workflows)
+skills/xhs-publisher/SKILL.md - Platform knowledge (DOM selectors, workflows)
 ```
 
 **Key design decisions:**
@@ -60,7 +60,7 @@ Both modes require filling the **complete content** (not a summary) in the final
 
 ## Modifying Platform Knowledge
 
-When XHS updates their UI, edit `skills/xiaohongshu-publishing/SKILL.md`:
+When XHS updates their UI, edit `skills/xhs-publisher/SKILL.md`:
 - DOM selectors and `find` patterns
 - Step sequences for each publishing mode
 - Error messages and recovery steps

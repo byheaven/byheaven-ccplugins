@@ -49,7 +49,7 @@ git clone https://github.com/byheaven/byheaven-skills.git
 cd byheaven-skills
 
 mkdir -p ~/.claude/plugins
-rsync -a skills/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
+rsync -a plugins/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
 ```
 
 ## 使用方法
@@ -304,7 +304,7 @@ xhs-publisher/
 ├── commands/
 │   └── publish.md           # 发布命令
 ├── skills/
-│   └── xiaohongshu-publishing/
+│   └── xhs-publisher/
 │       └── SKILL.md         # 小红书平台知识库
 └── README.md                # 本文档
 ```
@@ -340,7 +340,7 @@ xhs-publisher/
 
 ### 修改技能
 
-编辑 `skills/xiaohongshu-publishing/SKILL.md` 更新平台知识：
+编辑 `skills/xhs-publisher/SKILL.md` 更新平台知识：
 - DOM 选择器
 - 操作流程
 - 错误处理
