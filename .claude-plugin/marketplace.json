@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "xhs-publisher",
-      "description": "自动发布小红书图文内容，支持文字配图和图文笔记两种模式",
+      "description": "Automatically publishes Xiaohongshu (RED) posts via browser automation (text+images and photo-note modes).",
       "version": "0.1.0",
       "author": {
         "name": "yubai"

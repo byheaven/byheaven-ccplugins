@@ -2,110 +2,112 @@
 
 > A curated collection of Claude Code plugins by ByHeaven
 
-这是一个精选的 Claude Code 插件市场，包含由 ByHeaven 开发和维护的实用插件。
+English | [中文 README](README.zh-CN.md)
 
-## 📦 Available Plugins
+This repository is an English-first Claude Code plugin marketplace maintained by ByHeaven.
+
+## 📦 Available plugins
 
 ### 🔴 xhs-publisher
 
-**小红书自动发布插件**
+**Xiaohongshu (RED) auto publisher**
 
-自动填充小红书图文内容，通过浏览器自动化工具实现智能发布。
+Auto-fills Xiaohongshu post content and publishes via browser automation.
 
-**功能特性**:
-- ✅ 自动识别内容长度选择发布形式
-- ✅ 支持文字配图 (< 140字) 和图文笔记 (≥ 140字)
-- ✅ 支持从 Obsidian 笔记读取内容
-- ✅ 智能生成标签
-- ✅ 安全发布策略（用户最终确认）
+**Key features**:
+- ✅ Automatically chooses the publishing format based on content length
+- ✅ Supports text+images (< 140 chars) and photo-note (≥ 140 chars)
+- ✅ Can read content from Obsidian notes
+- ✅ Smart tag generation
+- ✅ Safe publishing flow (final confirmation by the user)
 
-**安装**: 参见下方安装方法
+**Install**: see the installation section below
 
-**仓库**: [github.com/byheaven/xhs-publisher](https://github.com/byheaven/xhs-publisher)
+**Repository**: https://github.com/byheaven/xhs-publisher
 
 ---
 
-## 🚀 如何安装插件
+## 🚀 Installation
 
-### 方法 1: 通过 Plugin Marketplace（推荐）
+### Option 1: via Plugin Marketplace (recommended)
 
 ```bash
-# 1. 添加 ByHeaven Plugin Marketplace
+# 1. Add the ByHeaven plugin marketplace
 claude plugin marketplace add https://github.com/byheaven/byheaven-ccplugins
 
-# 2. 安装插件
+# 2. Install a plugin
 claude plugin install xhs-publisher
 
-# 插件会自动安装到 ~/.claude/plugins/ 目录
+# Plugins are installed into ~/.claude/plugins/
 ```
 
-### 方法 2: 直接从 GitHub 安装
+### Option 2: install directly from GitHub
 
 ```bash
-# 安装单个插件（从 GitHub 仓库）
+# Install a single plugin from a GitHub repo
 claude plugin install byheaven/xhs-publisher
 ```
 
-### 方法 3: Git Clone
+### Option 3: git clone
 
 ```bash
-# 克隆插件仓库到 Claude 插件目录
+# Clone the plugin repo into Claude's plugin directory
 cd ~/.claude/plugins/
 git clone https://github.com/byheaven/xhs-publisher.git
 
-# 重启 Claude Code 或使用 claude plugin list 查看
+# Restart Claude Code (or run: claude plugin list)
 ```
 
-### 方法 4: 手动下载
+### Option 4: manual download
 
-1. 访问 [xhs-publisher releases](https://github.com/byheaven/xhs-publisher/releases)
-2. 下载最新版本的压缩包
-3. 解压到 `~/.claude/plugins/xhs-publisher/`
-4. 重启 Claude Code
+1. Go to https://github.com/byheaven/xhs-publisher/releases
+2. Download the latest release archive
+3. Extract to `~/.claude/plugins/xhs-publisher/`
+4. Restart Claude Code
 
-## 📋 插件列表
+## 📋 Plugin list
 
-| 插件名称 | 描述 | 版本 | 分类 |
-|---------|------|------|------|
-| [xhs-publisher](https://github.com/byheaven/xhs-publisher) | 小红书自动发布 | 0.1.0 | automation |
+| Plugin | Description | Version | Category |
+|---|---|---|---|
+| https://github.com/byheaven/xhs-publisher | Xiaohongshu (RED) auto publishing | 0.1.0 | automation |
 
-## 🛠️ 开发计划
+## 🛠️ Roadmap
 
-### 即将推出
+### Coming soon
 
-- 🔜 **notion-sync**: Notion 与 Obsidian 双向同步
-- 🔜 **wechat-publisher**: 微信公众号发布工具
-- 🔜 **multi-platform-publisher**: 多平台一键发布
+- 🔜 **notion-sync**: Two-way sync between Notion and Obsidian
+- 🔜 **wechat-publisher**: WeChat Official Accounts publishing tool
+- 🔜 **multi-platform-publisher**: One-click publishing to multiple platforms
 
-### 想法池
+### Idea pool
 
-- 💡 **ai-image-generator**: AI 图片生成工具
-- 💡 **content-optimizer**: 内容 SEO 优化建议
-- 💡 **social-analytics**: 社交媒体数据分析
+- 💡 **ai-image-generator**: AI image generation tool
+- 💡 **content-optimizer**: Content SEO optimization suggestions
+- 💡 **social-analytics**: Social media analytics
 
-## 🤝 贡献
+## 🤝 Contributing
 
-欢迎提交 Issue 和 Pull Request！
+Issues and pull requests are welcome.
 
-### 提交新插件
+### Add a new plugin
 
-如果你想将自己的插件添加到此 Market：
+To add your plugin to this marketplace:
 
-1. Fork 此仓库
-2. 在 `.claude-plugin/marketplace.json` 中添加你的插件信息
-3. 更新 `README.md`
-4. 提交 Pull Request
+1. Fork this repo
+2. Add your plugin entry to `.claude-plugin/marketplace.json`
+3. Update `README.md` (and optionally `README.zh-CN.md`)
+4. Open a pull request
 
-### 插件信息格式
+### Plugin entry format
 
 ```json
 {
   "name": "plugin-name",
-  "displayName": "插件显示名称",
-  "description": "插件描述",
+  "displayName": "Plugin Display Name",
+  "description": "Plugin description",
   "repository": "https://github.com/username/plugin-name",
   "author": {
-    "name": "作者名称"
+    "name": "Author name"
   },
   "version": "1.0.0",
   "keywords": ["keyword1", "keyword2"],
@@ -113,47 +115,47 @@ git clone https://github.com/byheaven/xhs-publisher.git
 }
 ```
 
-## 📝 插件开发指南
+## 📝 Plugin development guide
 
-想要开发自己的 Claude Code 插件？参考以下资源：
+Resources:
 
-- [Claude Code 插件开发文档](https://docs.claude.ai/plugins)
-- [xhs-publisher 源码](https://github.com/byheaven/xhs-publisher) - 作为参考示例
-- [Claude Code Plugin SDK](https://github.com/anthropics/claude-code-plugin-sdk)
+- https://docs.claude.ai/plugins
+- https://github.com/byheaven/xhs-publisher (reference implementation)
+- https://github.com/anthropics/claude-code-plugin-sdk
 
-### 插件结构
+### Plugin structure
 
 ```
 plugin-name/
 ├── .claude-plugin/
-│   └── plugin.json          # 插件清单
-├── commands/                 # 用户命令
-├── skills/                   # 自主技能
-├── agents/                   # 子代理
-├── hooks/                    # 事件钩子
-└── README.md                # 使用文档
+│   └── plugin.json          # plugin manifest
+├── commands/                 # user commands
+├── skills/                   # autonomous skills
+├── agents/                   # sub-agents
+├── hooks/                    # event hooks
+└── README.md                # documentation
 ```
 
-## 📄 许可证
+## 📄 License
 
-MIT License - 详见各插件仓库的 LICENSE 文件
+MIT License — see each plugin repo for its LICENSE file.
 
-## 🔗 相关链接
+## 🔗 Links
 
-- **ByHeaven GitHub**: [github.com/byheaven](https://github.com/byheaven)
-- **Claude Code 官网**: [claude.ai/code](https://claude.ai/code)
-- **问题反馈**: [提交 Issue](https://github.com/byheaven/byheaven-ccplugins/issues)
+- **ByHeaven GitHub**: https://github.com/byheaven
+- **Claude Code**: https://claude.ai/code
+- **Issues**: https://github.com/byheaven/byheaven-ccplugins/issues
 
-## 💬 社区
+## 💬 Community
 
-如果你在使用过程中遇到问题或有建议，欢迎：
+If you run into issues or have ideas:
 
-- 📧 提交 Issue
-- 💬 参与 Discussions
-- ⭐ Star 本项目支持我们
+- 📧 Open an issue
+- 💬 Join discussions
+- ⭐ Star this repo
 
 ---
 
-**免责声明**: 插件仅用于个人学习和提升效率。使用自动化工具时，请遵守相关平台的服务条款。
+**Disclaimer**: These plugins are for personal learning and productivity. When using automation tooling, please follow the target platform's Terms of Service.
 
 **Made with ❤️ by ByHeaven**
