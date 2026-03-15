@@ -287,7 +287,7 @@ Read these when you need more detail:
 → Check workflow permissions in repo Settings → Actions → General
 
 **Tag created but publish.yml doesn't trigger**
-→ Verify the tag pattern in publish.yml matches: `'v*'` catches `v1.0.0`
+→ Verify the tag pattern in publish.yml matches: `'[0-9]+.[0-9]+.[0-9]+'` catches `1.0.0`
 
 **extract-release-notes.sh exits with "version not found"**
 → The CHANGELOG.md section header doesn't match the tag. Ensure format is
