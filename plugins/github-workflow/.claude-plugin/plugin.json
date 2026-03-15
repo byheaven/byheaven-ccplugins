@@ -1,0 +1,10 @@
+{
+  "name": "github-workflow",
+  "version": "0.1.0",
+  "description": "Sets up a complete automated GitHub release workflow: conventional commits, release-please, AI-assisted changelog editing, and automated GitHub Releases.",
+  "author": {
+    "name": "yubai",
+    "email": "byheaven0912@gmail.com"
+  },
+  "keywords": ["github", "release", "changelog", "release-please", "conventional-commits", "automation", "ci-cd"]
+}
