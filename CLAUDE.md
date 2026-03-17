@@ -20,6 +20,7 @@ plugins/<name>/
 ```
 
 Optional (only when the plugin exposes slash commands):
+
 ```
 ├── commands/<command-name>.md   # Command frontmatter: name, description
 ```
@@ -42,11 +43,13 @@ All plugins must be registered in `.claude-plugin/marketplace.json`. Add an entr
 **Always use the `AskUserQuestion` tool explicitly** when a skill or command needs input from the user. Never write vague prose like "ask the user for X" — Claude will skip the tool and ask inline in text instead.
 
 Do this:
+
 ```
 Use the AskUserQuestion tool: "What is the project name?"
 ```
 
 Not this:
+
 ```
 Ask the user for the project name.
 ```

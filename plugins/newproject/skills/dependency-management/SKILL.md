@@ -22,6 +22,7 @@ ls .github/workflows/ 2>/dev/null
 ```
 
 Identify **all ecosystems** in the project:
+
 - `npm` — package.json present
 - `pip` — pyproject.toml or requirements.txt present
 - `gomod` — go.mod present
@@ -63,6 +64,7 @@ The templates default to weekly. Change `interval: "weekly"` to `"monthly"` or
 Copy `assets/workflows/dependabot-auto-merge.yml` to `.github/workflows/`.
 
 This workflow:
+
 1. Triggers when Dependabot opens or updates a PR
 2. Checks the update type (patch, minor, major)
 3. Auto-approves and merges patch and minor updates
@@ -101,6 +103,7 @@ automatically merge them.
 ## Step 6: Verify
 
 After pushing:
+
 1. Go to GitHub → Insights → Dependency graph → Dependabot to see the schedule
 2. On the next scheduled run (or trigger manually), a Dependabot PR should appear
 3. Verify the PR has the `dependencies` label and grouped updates appear together

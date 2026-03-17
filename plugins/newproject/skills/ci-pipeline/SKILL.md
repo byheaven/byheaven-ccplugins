@@ -28,6 +28,7 @@ ls package-lock.json yarn.lock pnpm-lock.yaml bun.lockb 2>/dev/null
 ```
 
 Determine:
+
 - **Project type**: web / node / python / go / rust / other
 - **Package manager** (Node): npm / yarn / pnpm / bun (check for lockfile)
 - **Test command**: from package.json scripts / pyproject.toml / Makefile — if unclear, use the AskUserQuestion tool: "What command runs your tests? (e.g. npm test, pytest, go test ./...)"
@@ -55,23 +56,27 @@ Copy the language-specific workflow from `assets/workflows/` to `.github/workflo
 After copying, customize based on the detected project:
 
 ### Node.js / Web
+
 - Set the **Node.js version matrix** (default: `[18, 20, 22]`; for web apps a single LTS version is fine)
 - Set the **package manager** in the install step (npm / yarn / pnpm / bun)
 - Verify the **test command** matches `package.json` scripts (`npm test` / `npm run test` / `vitest` / `jest`)
 - For web apps: adjust or remove the matrix (typically only need the LTS version)
 
 ### Python
+
 - Set the **Python version matrix** (default: `["3.11", "3.12", "3.13"]`)
 - Set the **install command**: `pip install -e ".[dev]"` / `pip install -r requirements-dev.txt`
 - Set the **test command**: `pytest` / `python -m pytest`
 - Set the **lint command**: `ruff check .` / `flake8 .` / skip if no linter
 
 ### Go
+
 - Set the **Go version** (default: latest stable; check `go.mod` for minimum)
 - Verify the **test command** (`go test ./...` works for most projects)
 - The build step uses `go build ./...` — adjust the binary target if needed
 
 ### Rust
+
 - Verify the **toolchain**: `stable` is the default; change to `nightly` if required
 - The test step uses `cargo test` — adjust for workspace crates if needed
 

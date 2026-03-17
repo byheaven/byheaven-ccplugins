@@ -1,0 +1,13 @@
+# CODEOWNERS
+# Controls who is automatically requested for review on PRs.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+*  @byheaven
+
+# CI and infrastructure
+.github/  @byheaven
+
+# Plugin-specific ownership (add team overrides here as the project grows)
+# plugins/xhs-publisher/   @byheaven
+# plugins/newproject/       @byheaven

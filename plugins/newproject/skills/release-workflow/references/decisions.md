@@ -70,6 +70,7 @@ debuggable, and owned by the project. If parsing breaks, it's obvious why.
 ## Why split release-please and publish into two workflows?
 
 A single workflow that does both would work, but splitting them:
+
 - Makes each workflow's responsibility clear
 - Allows the publish step to be triggered by other means (e.g., manual workflow dispatch)
 - Means a failed publish doesn't prevent the release from being created
@@ -80,6 +81,7 @@ A single workflow that does both would work, but splitting them:
 ## Branch protection recommendations
 
 For this workflow to function well:
+
 - Protect `main` / `master`
 - Require PR reviews (at minimum 1)
 - Require status checks: commitlint (if configured), tests

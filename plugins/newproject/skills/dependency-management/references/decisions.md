@@ -37,6 +37,7 @@ A library bumping from `2.3.0` to `2.4.0` added features but did not break
 existing interfaces. If your CI is passing, auto-merging minor updates is safe.
 
 The risk is that libraries don't always follow semver perfectly. Mitigating this:
+
 - CI must pass before auto-merge (GitHub's branch protection requirement)
 - Auto-merge only runs `--merge` (not `--squash` or `--rebase`), preserving history
 
@@ -54,6 +55,7 @@ change behavior between major versions) and high-value for security.
 ## Why `commit-message.prefix: "chore(deps)"`?
 
 Conventional commit prefixes on Dependabot commits ensure that:
+
 1. Release-please correctly classifies them as non-release-triggering (chore)
 2. The commits appear in the changelog if desired (under a `### Refactoring` section)
 3. Commit history is consistent with the rest of the project

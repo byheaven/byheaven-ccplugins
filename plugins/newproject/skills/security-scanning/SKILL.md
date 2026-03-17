@@ -23,6 +23,7 @@ ls .github/workflows/codeql* 2>/dev/null
 ```
 
 Determine the **CodeQL language** from the project type:
+
 - Node.js / Web → `javascript-typescript`
 - Python → `python`
 - Go → `go`
@@ -45,16 +46,20 @@ strategy:
 ```
 
 The workflow runs on:
+
 - Push to `main`
 - Pull requests to `main`
 - Weekly schedule (catches vulnerabilities in dependencies that were safe when first added)
 
 **Note for Rust projects:** CodeQL does not yet support Rust. Instead:
+
 - Use `cargo audit` for dependency vulnerability scanning:
+
   ```bash
   cargo install cargo-audit
   cargo audit
   ```
+
 - Add a `cargo-audit` step to `ci-rust.yml`
 
 ---
@@ -64,6 +69,7 @@ The workflow runs on:
 Copy `assets/workflows/dependency-review.yml` to `.github/workflows/`.
 
 This workflow:
+
 - Runs on every pull request
 - Scans new/changed dependencies for known CVEs
 - Fails the PR if any dependency has a high or critical vulnerability
@@ -83,6 +89,7 @@ Guide the user through enabling it:
 3. Enable **Push protection** (blocks pushes that contain known secret patterns)
 
 Push protection is available on:
+
 - Public repositories: free
 - Private repositories: requires GitHub Advanced Security (paid)
 
@@ -104,6 +111,7 @@ git push
 ## Step 5: Review the First CodeQL Results
 
 After the first run:
+
 1. Go to GitHub → **Security** tab → **Code scanning**
 2. Review any alerts CodeQL found
 3. Triage: mark known false positives as "dismissed" with a reason

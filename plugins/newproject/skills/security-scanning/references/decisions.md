@@ -48,10 +48,12 @@ the team becomes familiar with the tool's output.
 ## Why separate dependency-review from CodeQL?
 
 They solve different problems:
+
 - **CodeQL**: finds vulnerabilities in *your code* (logic bugs, injection, etc.)
 - **dependency-review**: finds vulnerabilities in *your dependencies* (CVEs)
 
 They run at different times:
+
 - **CodeQL**: on push to main and weekly
 - **dependency-review**: on PRs only (catches new dependencies before they merge)
 
@@ -67,6 +69,7 @@ Adding it to a base template would add noise for the majority of projects.
 
 For projects that do use Docker, add Trivy as a separate step in the CI workflow
 or as a standalone workflow:
+
 ```yaml
 - name: Scan container image
   uses: aquasecurity/trivy-action@master

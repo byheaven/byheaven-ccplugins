@@ -1,0 +1,32 @@
+{
+  "name": "byheaven-skills",
+  "version": "1.0.0",
+  "description": "A monorepo of Claude Code skills/plugins by Byheaven",
+  "private": true,
+  "scripts": {
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
+    "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\"",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/byheaven/byheaven-skills.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/byheaven/byheaven-skills/issues"
+  },
+  "homepage": "https://github.com/byheaven/byheaven-skills#readme",
+  "lint-staged": {
+    "*.md": [
+      "markdownlint-cli2 --fix"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "markdownlint-cli2": "^0.21.0"
+  }
+}

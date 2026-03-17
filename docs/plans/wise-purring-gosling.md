@@ -13,6 +13,7 @@ The current `github-workflow` plugin has a single skill (`github-release-workflo
 ## Migration: `github-workflow` → `newproject`
 
 The existing `github-workflow` plugin is **absorbed** into `newproject` and removed:
+
 - `github-release-workflow` skill → renamed to `release-workflow`
 - Content, assets, and references remain identical (only frontmatter `name` changes)
 - `marketplace.json` replaces the `github-workflow` entry with `newproject`
@@ -161,6 +162,7 @@ project-scaffold          (no dependencies — always first)
 ```
 
 **Execution order in `/newproject`:**
+
 1. `project-scaffold`
 2. `code-quality`
 3. `release-workflow`
@@ -184,23 +186,27 @@ Each skill detects the project type independently (3-4 lines of bash). Duplicati
 ## Skill Design Summaries
 
 ### project-scaffold
+
 - Detects project type, checks for existing README/LICENSE/.gitignore
 - Creates missing files from language-specific templates in assets
 - Asks user for project name, description, license preference (default MIT)
 - Initializes git if needed, sets default branch to `main`
 
 ### release-workflow
+
 - **Migrated directly** from existing `github-release-workflow`
 - Only change: frontmatter `name: release-workflow` (was `github-release-workflow`)
 - All assets, references, and SKILL.md body remain identical
 
 ### ci-pipeline
+
 - Per-language workflow templates: test, lint, build with matrix strategies
 - Caching (node_modules, pip, Go modules, Cargo)
 - Concurrency groups to cancel stale CI runs
 - `decisions.md`: why one CI file per language, not composable fragments
 
 ### code-quality
+
 - **Node/TS**: ESLint (flat config) + Prettier + lint-staged + husky pre-commit
 - **Python**: Ruff (lint + format in one) + pre-commit framework
 - **Go**: gofmt/goimports + golangci-lint config
@@ -208,17 +214,20 @@ Each skill detects the project type independently (3-4 lines of bash). Duplicati
 - **All**: .markdownlint.json
 
 ### github-repo-setup
+
 - PR template (checklist-style), issue templates (YAML forms for bug/feature)
 - CODEOWNERS from user input about team structure
 - Branch protection via `gh api` (programmatic, not just documentation)
 
 ### dependency-management
+
 - Dependabot config with grouped updates per ecosystem
 - Always includes `github-actions` ecosystem
 - Auto-merge workflow for minor/patch
 - `decisions.md`: why Dependabot over Renovate (built-in, zero app install)
 
 ### security-scanning
+
 - CodeQL workflow with correct language matrix
 - Dependency review workflow (blocks PRs with known-vulnerable deps)
 - Guidance on enabling secret scanning in repo settings
@@ -228,6 +237,7 @@ Each skill detects the project type independently (3-4 lines of bash). Duplicati
 ## Implementation Phases
 
 ### Phase 1 — Foundation
+
 1. Create `plugins/newproject/` structure + `plugin.json`
 2. Migrate `release-workflow` from `github-workflow` (copy + rename frontmatter)
 3. Build `project-scaffold` skill
@@ -237,14 +247,16 @@ Each skill detects the project type independently (3-4 lines of bash). Duplicati
 7. Remove `plugins/github-workflow/`
 
 ### Phase 2 — Quality & Governance
-8. Build `code-quality` skill
-9. Build `github-repo-setup` skill
-10. Build `dependency-management` skill
-11. Update `/newproject` command to include new skills
+
+1. Build `code-quality` skill
+2. Build `github-repo-setup` skill
+3. Build `dependency-management` skill
+4. Update `/newproject` command to include new skills
 
 ### Phase 3 — Security
-12. Build `security-scanning` skill
-13. Final command update
+
+1. Build `security-scanning` skill
+2. Final command update
 
 Each phase produces a **shippable plugin**. After Phase 1, `/newproject` works with 3 skills.
 
@@ -253,13 +265,16 @@ Each phase produces a **shippable plugin**. After Phase 1, `/newproject` works w
 ## Files Changed
 
 ### New
+
 - `plugins/newproject/` — entire new plugin directory (see tree above)
 
 ### Modified
+
 - `.claude-plugin/marketplace.json` — replace `github-workflow` entry with `newproject`
 - Root `README.md` — update plugin listing
 
 ### Deleted
+
 - `plugins/github-workflow/` — absorbed into `newproject`
 
 ---

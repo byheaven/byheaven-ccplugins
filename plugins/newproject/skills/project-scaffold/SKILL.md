@@ -28,11 +28,13 @@ git status 2>/dev/null || echo "git not initialized"
 ```
 
 Determine:
+
 - **Project type**: web / node / python / go / rust / other
 - **What's missing**: only create files that don't already exist
 - **Git status**: whether to run `git init`
 
 Use the AskUserQuestion tool to collect required inputs before proceeding:
+
 - If the project name is not determinable from the directory or package file: "What is the project name?"
 - "Please provide a short description (1–2 sentences):"
 - "Which license? MIT (default) / Apache-2.0 / GPL-3.0 / ISC / none"
@@ -56,6 +58,7 @@ If git is already initialized, skip this step entirely.
 
 If `README.md` does not exist, create it from `assets/templates/README.md.template`.
 Replace the placeholders:
+
 - `{{PROJECT_NAME}}` → project name
 - `{{DESCRIPTION}}` → short description
 - `{{PROJECT_TYPE}}` → detected type for the installation section
@@ -67,6 +70,7 @@ If `README.md` already exists, do not overwrite it — use the AskUserQuestion t
 ## Step 3: LICENSE
 
 If no `LICENSE` file exists:
+
 - Default to MIT — copy `assets/templates/LICENSE-MIT.template`
 - Replace `{{YEAR}}` with the current year
 - Replace `{{AUTHOR}}` with the user's name — if unknown, use the AskUserQuestion tool: "What name should appear in the LICENSE copyright line?"
@@ -79,6 +83,7 @@ Apache-2.0 and GPL-3.0 require minor customization (project name, copyright hold
 ## Step 4: .gitignore
 
 If no `.gitignore` exists, copy the language-specific template from `assets/gitignore/`:
+
 - `node.gitignore` → Node.js and web projects
 - `python.gitignore` → Python projects
 - `go.gitignore` → Go projects
@@ -113,28 +118,33 @@ Replace `{{PROJECT_NAME}}` with the project name.
 Create standard directories based on project type if they don't already exist:
 
 **Node.js / Web:**
+
 ```bash
 mkdir -p src tests docs scripts
 ```
 
 **Python:**
+
 ```bash
 mkdir -p src/{{package_name}} tests docs scripts
 touch src/{{package_name}}/__init__.py
 ```
 
 **Go:**
+
 ```bash
 mkdir -p cmd/{{project_name}} internal pkg docs scripts
 ```
 
 **Rust:**
+
 ```bash
 # Cargo handles src/ automatically; only add extras
 mkdir -p docs scripts
 ```
 
 **Generic:**
+
 ```bash
 mkdir -p src tests docs scripts
 ```

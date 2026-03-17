@@ -8,6 +8,7 @@ GitHub issue forms (YAML) create structured forms with dropdowns, text areas,
 and validation. Markdown templates are plain text that users can ignore entirely.
 
 YAML forms:
+
 - Enforce required fields
 - Provide dropdowns for structured data (priority, category)
 - Automatically apply labels
@@ -22,6 +23,7 @@ templates in this skill make that a one-time cost.
 
 The GitHub UI for branch protection changes frequently and varies by plan tier.
 `gh api` is:
+
 - Reproducible and scriptable
 - Works the same across all plan tiers
 - Can be committed as a script and re-run after repo recreation

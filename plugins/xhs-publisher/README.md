@@ -21,7 +21,8 @@
 本插件依赖 Claude in Chrome 浏览器扩展进行自动化操作。
 
 **安装方法**:
-1. 访问 https://claude.ai/chrome
+
+1. 访问 <https://claude.ai/chrome>
 2. 安装 Claude in Chrome 扩展
 3. 重启 Chrome 浏览器
 4. 确保扩展已启用
@@ -29,7 +30,7 @@
 ### 2. 小红书账号
 
 - 需要已注册的小红书账号
-- 使用前需在浏览器中登录 https://creator.xiaohongshu.com
+- 使用前需在浏览器中登录 <https://creator.xiaohongshu.com>
 
 ## 安装
 
@@ -81,6 +82,7 @@ rsync -a plugins/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
 ### 发布流程
 
 1. **运行命令**
+
    ```bash
    /xhs-publisher:xhs note="pages/publish/cn/我的文章.md"
    ```
@@ -111,17 +113,20 @@ rsync -a plugins/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
 ### 文字配图 (< 140字)
 
 **适用场景**:
+
 - 短小精悍的分享
 - 日常生活记录
 - 快速笔记
 
 **特点**:
+
 - 文字转换为图片
 - 第一张图片 = 标题
 - 第二张图片开始 = 正文
 - 支持多种模板风格
 
 **示例**:
+
 ```bash
 /xhs-publisher:xhs content="今天天气真好，心情也跟着好起来了！推荐大家去公园走走。"
 ```
@@ -129,17 +134,20 @@ rsync -a plugins/xhs-publisher/ ~/.claude/plugins/xhs-publisher/
 ### 图文笔记 (≥ 140字)
 
 **适用场景**:
+
 - 详细的教程和指南
 - 深度分享和评测
 - 长篇经验总结
 
 **特点**:
+
 - 富文本编辑器
 - 支持格式化（标题、列表等）
 - 自动生成封面图
 - 需要填写完整正文内容（虽然字段名为"正文摘录"）
 
 **示例**:
+
 ```bash
 /xhs-publisher:xhs note="pages/publish/cn/小红书运营指南.md"
 ```
@@ -169,6 +177,7 @@ date: 2024-01-22
 ```
 
 **规则**:
+
 - **标题**: 使用文件名（去除 `.md` 扩展名）
 - **正文**: frontmatter 之后的所有内容
 - **frontmatter**: 自动检测和去除
@@ -221,7 +230,8 @@ Claude 会根据内容自动生成标题，并请求确认：
 **原因**: Claude in Chrome 扩展未运行
 
 **解决方案**:
-1. 确认已安装扩展: https://claude.ai/chrome
+
+1. 确认已安装扩展: <https://claude.ai/chrome>
 2. 重启 Chrome 浏览器
 3. 点击扩展图标确认已启用
 4. 重新运行命令
@@ -231,7 +241,8 @@ Claude 会根据内容自动生成标题，并请求确认：
 **原因**: 未登录小红书创作者平台
 
 **解决方案**:
-1. 在浏览器中访问 https://creator.xiaohongshu.com
+
+1. 在浏览器中访问 <https://creator.xiaohongshu.com>
 2. 完成登录流程
 3. 保持登录状态
 4. 重新运行命令
@@ -239,11 +250,13 @@ Claude 会根据内容自动生成标题，并请求确认：
 ### 问题 3: 内容填充失败
 
 **可能原因**:
+
 - 页面加载未完成
 - 网络连接问题
 - 页面结构已更新
 
 **解决方案**:
+
 1. 等待片刻后重试
 2. 检查网络连接
 3. 清除浏览器缓存
@@ -254,11 +267,13 @@ Claude 会根据内容自动生成标题，并请求确认：
 **原因**: 标签格式不正确
 
 **确保**:
+
 - 标签以 `#` 开头
 - 多个标签用空格分隔
 - 标签前换两行与正文分隔
 
 **正确格式**:
+
 ```
 正文内容...
 
@@ -341,6 +356,7 @@ xhs-publisher/
 ### 修改技能
 
 编辑 `skills/xhs-publisher/SKILL.md` 更新平台知识：
+
 - DOM 选择器
 - 操作流程
 - 错误处理
@@ -360,6 +376,7 @@ cc --plugin-dir ~/.claude/plugins/xhs-publisher
 ### v0.1.0 (2024-01-22)
 
 **首次发布**:
+
 - ✅ 支持文字配图和图文笔记两种发布形式
 - ✅ 自动识别内容长度选择发布形式
 - ✅ 支持从 Obsidian 笔记读取内容
@@ -374,6 +391,7 @@ cc --plugin-dir ~/.claude/plugins/xhs-publisher
 ### 报告问题
 
 如果遇到问题，请提供：
+
 1. 错误描述
 2. 使用的命令
 3. 浏览器截图
@@ -382,6 +400,7 @@ cc --plugin-dir ~/.claude/plugins/xhs-publisher
 ### 功能建议
 
 欢迎建议新功能：
+
 - 支持更多平台
 - 批量发布
 - 定时发布

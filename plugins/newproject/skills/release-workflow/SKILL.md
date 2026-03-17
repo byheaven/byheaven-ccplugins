@@ -51,6 +51,7 @@ ls .github/workflows/ 2>/dev/null
 ```
 
 Determine:
+
 - **Project type**: web / node / python / go / rust / other
   - If a Node project has a web framework config file, classify as **web**
   - If ambiguous, use the AskUserQuestion tool: "Is this a web app (deployed via Vercel/Netlify) or a Node.js library/tool? (web/node)"
@@ -78,6 +79,7 @@ chmod +x .husky/commit-msg
 ```
 
 Create `commitlint.config.js`:
+
 ```js
 module.exports = { extends: ['@commitlint/config-conventional'] }
 ```
@@ -113,16 +115,19 @@ Use `assets/config/release-please-config.json` as the base, then edit:
 - Verify `"changelog-sections"` match the team's commit type conventions
 
 Also create `.release-please-manifest.json` in the project root:
+
 ```json
 {
   ".": "0.0.0"
 }
 ```
+
 Replace `"0.0.0"` with the current version if the project already has releases.
 
 ### Permissions required
 
 In the GitHub repo → Settings → Actions → General:
+
 - Workflow permissions: **Read and write**
 - Allow GitHub Actions to create and approve pull requests: **enabled**
 
@@ -145,6 +150,7 @@ Copy `assets/workflows/publish.yml` to `.github/workflows/publish.yml`.
 Then customize the **Publish step** at the bottom of the file for the project type:
 
 **Node.js:**
+
 ```yaml
 - name: Publish to npm
   run: npm ci && npm publish
@@ -153,6 +159,7 @@ Then customize the **Publish step** at the bottom of the file for the project ty
 ```
 
 **Python:**
+
 ```yaml
 - name: Publish to PyPI
   run: pip install build twine && python -m build && twine upload dist/*
@@ -162,6 +169,7 @@ Then customize the **Publish step** at the bottom of the file for the project ty
 ```
 
 **Go / Rust / Other:**
+
 ```yaml
 - name: Build release binary
   run: go build -o myapp-${{ github.ref_name }} ./cmd/myapp
@@ -217,6 +225,7 @@ Versions follow [Semantic Versioning](https://semver.org).
 ```
 
 Commit everything:
+
 ```bash
 git add .
 git commit -m "chore: set up automated release workflow"
@@ -236,6 +245,7 @@ Walk the user through a dry run:
 5. The PR title should be something like `chore(main): release 0.1.0`
 
 If the PR doesn't appear within 2 minutes, check:
+
 - Workflow permissions (Step 2)
 - The `release-please.yml` syntax (check Actions tab for errors)
 - That `.release-please-manifest.json` exists
@@ -247,6 +257,7 @@ If the PR doesn't appear within 2 minutes, check:
 Explain the ongoing workflow to the user:
 
 ### Normal development
+
 ```bash
 # Commit with conventional format
 git commit -m "feat(auth): add magic link login"
@@ -255,6 +266,7 @@ git push origin main
 ```
 
 ### Editing the Release PR (before merging)
+
 1. Open the Release PR on GitHub
 2. Find the `CHANGELOG.md` change in the diff
 3. Click "..." → "Edit file" on the CHANGELOG.md
@@ -265,6 +277,7 @@ git push origin main
 5. Merge the PR when satisfied
 
 ### What happens after merge
+
 - release-please creates a git tag
 - The tag-triggered workflow triggers automatically (`publish.yml` or `release-only.yml`)
 - It reads your edited `CHANGELOG.md` and creates the GitHub Release

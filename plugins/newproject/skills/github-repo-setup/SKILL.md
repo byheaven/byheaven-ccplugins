@@ -22,6 +22,7 @@ gh repo view --json nameWithOwner --jq .nameWithOwner
 ```
 
 If `gh` is not installed or authenticated, guide the user:
+
 ```bash
 # Install (macOS)
 brew install gh
@@ -73,6 +74,7 @@ Create `.github/CODEOWNERS` from `assets/templates/CODEOWNERS.template`.
 Replace the placeholder entries with the actual GitHub usernames or team names.
 
 **Common patterns:**
+
 ```
 # Single owner for everything
 *  @username
@@ -115,6 +117,7 @@ gh api \
 ```
 
 Before running, use the AskUserQuestion tool:
+
 - "How many required reviewers for PRs? (default: 1)"
 - "Should admins be exempt from branch protection? (yes/no, default: no)"
 

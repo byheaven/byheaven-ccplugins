@@ -77,6 +77,7 @@ Here is the raw changelog section to rewrite:
 ### 5. Review the AI output
 
 Check that:
+
 - The 1–3 headline features are written from the user's perspective
 - No commit message syntax (`feat:`, `fix:`) remains
 - Internal changes (refactor, chore, ci) have been removed
@@ -88,12 +89,15 @@ Adjust freely. The AI output is a draft, not final.
 ### 6. Edit the CHANGELOG.md in the PR
 
 On GitHub, in the Files Changed tab:
+
 1. Click the `...` menu on `CHANGELOG.md` → **Edit file**
 2. Find the new version section
 3. Keep the header line exactly as-is:
+
    ```
    ## [1.2.0] - 2026-03-15
    ```
+
 4. Replace everything below the header (until the next `## [` line)
    with your edited content
 5. Commit directly to the PR branch
@@ -103,6 +107,7 @@ On GitHub, in the Files Changed tab:
 Once you're happy with the changelog entry, merge the PR.
 
 What happens next (automatically):
+
 - release-please creates the git tag `v1.2.0`
 - The tag-triggered workflow runs (`publish.yml` or `release-only.yml`)
 - It parses `CHANGELOG.md`, extracts the `[1.2.0]` section

@@ -87,6 +87,7 @@ Security (Tier 3 — recommended for public/production projects):
 Use the AskUserQuestion tool: "Which skills do you want to run? (Press Enter to run all unchecked Tier 1 items, or specify: 'all', 'tier1', 'tier2', 'all tiers', or specific skill names)"
 
 If the user passes an argument:
+
 - `--tier1` or `tier1`: run only Tier 1 skills that aren't done
 - `--all` or `all`: run all skills that aren't done
 - Skill name (e.g., `ci-pipeline`): run that single skill

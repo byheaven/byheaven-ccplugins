@@ -16,10 +16,36 @@
 *.sln
 *.sw?
 
+# Node.js
+node_modules/
+package-lock.json
+
 # Logs
 *.log
 
 # Temporary files
 *.tmp
 *.temp
+*.bak
+*.swp
 .cache/
+tmp/
+temp/
+
+# Environment / secrets
+.env
+.env.local
+.env.*
+*.env
+secrets/
+credentials/
+*.pem
+*.key
+*.cert
+
+# OS generated
+.DS_Store?
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

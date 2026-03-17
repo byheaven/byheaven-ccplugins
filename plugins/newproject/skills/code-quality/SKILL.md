@@ -42,6 +42,7 @@ npm install --save-dev \
 ```
 
 For TypeScript projects, also install:
+
 ```bash
 npm install --save-dev \
   typescript-eslint \
@@ -57,6 +58,7 @@ Create `prettier.config.js` from `assets/config/prettier.config.js`.
 ### Set up lint-staged in package.json
 
 Add to `package.json`:
+
 ```json
 {
   "lint-staged": {
@@ -69,18 +71,21 @@ Add to `package.json`:
 ### Set up husky pre-commit hook
 
 **Check if husky is already installed first** (from `release-workflow` setup):
+
 ```bash
 # Only run husky init if not already done
 ls .husky/ 2>/dev/null || npx husky init
 ```
 
 Add the pre-commit hook:
+
 ```bash
 echo "npx lint-staged" > .husky/pre-commit
 chmod +x .husky/pre-commit
 ```
 
 If `.husky/pre-commit` already exists (from another skill), append:
+
 ```bash
 echo "npx lint-staged" >> .husky/pre-commit
 ```
@@ -103,6 +108,7 @@ Copy `assets/config/ruff.toml` to the project root.
 ### Set up pre-commit (Python projects)
 
 Install the pre-commit framework:
+
 ```bash
 pip install pre-commit
 ```
@@ -110,6 +116,7 @@ pip install pre-commit
 Copy `assets/hooks/pre-commit` to `.pre-commit-config.yaml`.
 
 Install the hooks:
+
 ```bash
 pre-commit install
 ```
@@ -175,6 +182,7 @@ rustup component add rustfmt clippy
 ```
 
 Create `rustfmt.toml` in the project root:
+
 ```toml
 edition = "2021"
 max_width = 100
@@ -201,6 +209,7 @@ npm install --global markdownlint-cli2
 Copy `assets/config/.markdownlint.json` to the project root.
 
 Add to lint-staged (Node projects):
+
 ```json
 {
   "lint-staged": {

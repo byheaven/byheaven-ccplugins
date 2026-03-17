@@ -32,6 +32,10 @@ Then install a specific plugin:
 /plugin install newproject
 ```
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding plugins, commit conventions, and PR process.
+
 ## License
 
 MIT License
