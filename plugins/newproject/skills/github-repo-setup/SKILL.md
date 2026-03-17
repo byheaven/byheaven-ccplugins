@@ -59,7 +59,7 @@ cp assets/templates/feature-request.yml .github/ISSUE_TEMPLATE/feature-request.y
 
 Use the AskUserQuestion tool: "What is the project label name for issue forms? (e.g. 'my-app', used as `project: my-app` label — press Enter to skip)"
 
-If they provide a name, also ask: "Any additional labels to add to issue forms? (comma-separated, or press Enter to skip)"
+If they provide a name, also use the AskUserQuestion tool: "Any additional labels to add to issue forms? (comma-separated, or press Enter to skip)"
 
 Update the `labels:` field in each YAML template to include project-specific labels.
 
