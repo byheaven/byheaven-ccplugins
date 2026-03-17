@@ -27,8 +27,8 @@ Determine the **CodeQL language** from the project type:
 - Node.js / Web → `javascript-typescript`
 - Python → `python`
 - Go → `go`
-- Rust → Rust is not yet supported by CodeQL; skip CodeQL, add other tools
-- Other → use the AskUserQuestion tool: "CodeQL doesn't natively support this language. Skip CodeQL, or would you like guidance on alternative SAST tools? (skip/alternatives)"
+- Rust → CodeQL does not support Rust; skip CodeQL and go directly to Step 1's Rust note
+- Other → CodeQL does not support this language; skip Step 1 entirely and proceed to Step 2 (dependency review)
 
 ---
 
@@ -126,8 +126,27 @@ checks are in place for this project.
 
 Check if `CLAUDE.md` has a `## Contributor Conventions` section:
 
-- **If it doesn't exist**: create the section first (see project-scaffold Step 9 for the base template)
-- **Then add** the following line to the section (if not already present):
+- **If it doesn't exist**: create a minimal one:
+
+  ```markdown
+  # CLAUDE.md
+
+  This file provides guidance to Claude Code when working in this repository.
+
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If it exists** but has no `## Contributor Conventions` section, append:
+
+  ```markdown
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If `## Contributor Conventions` already exists**, just add the following line (if not already present):
 
 > `Security: CodeQL runs on every push and PR. Dependency review blocks PRs that introduce high/critical CVEs. Check the Security tab for any open alerts.`
 

@@ -425,7 +425,26 @@ and where the workflow is documented.
 
 Check if `CLAUDE.md` has a `## Contributor Conventions` section:
 
-- **If it doesn't exist**: create the section first (see project-scaffold Step 9 for the base template)
-- **Then add** the following lines to the section (if not already present):
+- **If it doesn't exist**: create a minimal one:
+
+  ```markdown
+  # CLAUDE.md
+
+  This file provides guidance to Claude Code when working in this repository.
+
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If it exists** but has no `## Contributor Conventions` section, append:
+
+  ```markdown
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If `## Contributor Conventions` already exists**, just add the following lines (if not already present):
 
 > `Release: when the user says "release", "ship", or "merge the release PR", follow the Release Workflow section in CONTRIBUTING.md. Use docs/changelog-style-guide.md for changelog rewriting.`

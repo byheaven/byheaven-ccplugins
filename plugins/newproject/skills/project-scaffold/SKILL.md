@@ -37,7 +37,6 @@ Use the AskUserQuestion tool to collect required inputs before proceeding:
 
 - If the project name is not determinable from the directory or package file: "What is the project name?"
 - "Please provide a short description (1–2 sentences):"
-- "Which license? MIT (default) / Apache-2.0 / GPL-3.0 / ISC / none"
 
 ---
 
@@ -63,20 +62,17 @@ Replace the placeholders:
 - `{{DESCRIPTION}}` → short description
 - `{{PROJECT_TYPE}}` → detected type for the installation section
 
-If `README.md` already exists, do not overwrite it — use the AskUserQuestion tool: "README.md already exists. Update specific sections, or skip? (update/skip)"
+If `README.md` already exists, check for missing standard sections (installation, usage, contributing) and add only what's missing. Do not overwrite existing content.
 
 ---
 
 ## Step 3: LICENSE
 
-If no `LICENSE` file exists:
+If no `LICENSE` file exists, create MIT (default):
 
-- Default to MIT — copy `assets/templates/LICENSE-MIT.template`
+- Copy `assets/templates/LICENSE-MIT.template`
 - Replace `{{YEAR}}` with the current year
 - Replace `{{AUTHOR}}` with the user's name — if unknown, use the AskUserQuestion tool: "What name should appear in the LICENSE copyright line?"
-
-For other licenses, generate the appropriate text based on the user's choice.
-Apache-2.0 and GPL-3.0 require minor customization (project name, copyright holder).
 
 ---
 
@@ -104,12 +100,12 @@ If `.editorconfig` already exists, skip and notify the user.
 
 ---
 
-## Step 6: CONTRIBUTING.md (optional)
+## Step 6: CONTRIBUTING.md
 
-Use the AskUserQuestion tool: "Would you like a minimal CONTRIBUTING.md added to the project? (yes/no)"
-
-If yes, create from `assets/templates/CONTRIBUTING.md.template`.
+If `CONTRIBUTING.md` does not exist, create it from `assets/templates/CONTRIBUTING.md.template`.
 Replace `{{PROJECT_NAME}}` with the project name.
+
+If `CONTRIBUTING.md` already exists, skip this step.
 
 ---
 
@@ -183,5 +179,34 @@ If the project already has commits, skip this step and let the user commit manua
 | `LICENSE` | Always (if missing), default MIT |
 | `.gitignore` | Always (if missing) |
 | `.editorconfig` | Always (if missing) |
-| `CONTRIBUTING.md` | Optional, on user request |
+| `CONTRIBUTING.md` | Always (if missing) |
 | `src/`, `tests/`, `docs/`, `scripts/` | If missing for detected project type |
+
+---
+
+## Step 9: Update CLAUDE.md
+
+Ensure `CLAUDE.md` has a `## Contributor Conventions` section so Claude knows
+where project conventions live in future sessions.
+
+**If `CLAUDE.md` doesn't exist**, create a minimal one:
+
+```markdown
+# CLAUDE.md
+
+This file provides guidance to Claude Code when working in this repository.
+
+## Contributor Conventions
+
+Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+```
+
+**If `CLAUDE.md` exists** but has no `## Contributor Conventions` section, append:
+
+```markdown
+## Contributor Conventions
+
+Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+```
+
+**If `## Contributor Conventions` already exists**, the base pointer is present — skip.

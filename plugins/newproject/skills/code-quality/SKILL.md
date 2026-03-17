@@ -22,8 +22,7 @@ cat package.json | grep -q '"husky"' && echo "husky present" || echo "husky abse
 ls .eslintrc* eslint.config.* .prettierrc* prettier.config.* ruff.toml .pre-commit-config.yaml .golangci.yml rustfmt.toml .markdownlint.json 2>/dev/null
 ```
 
-Only install tools that aren't already configured. If the project already has ESLint,
-use the AskUserQuestion tool: "An ESLint config already exists. Overwrite it with the recommended flat config, or skip ESLint setup? (overwrite/skip)"
+Only install tools that aren't already configured. If the project already has an ESLint config, check whether it's using the flat config format (`eslint.config.*`); if not, migrate it. Preserve any project-specific rules.
 
 ---
 
@@ -243,3 +242,45 @@ git add . && npx lint-staged  # Node (dry run via staged files)
 - `references/decisions.md` — Why Ruff over flake8+black, why flat ESLint config, etc.
 - `assets/config/` — All config files with sensible defaults
 - `assets/hooks/pre-commit` — Python pre-commit-config.yaml template
+
+---
+
+## Step 7: Update CLAUDE.md
+
+Add a linting pointer to `CLAUDE.md` so Claude knows what lint tooling is set up.
+
+Check if `CLAUDE.md` has a `## Contributor Conventions` section:
+
+- **If it doesn't exist**: create a minimal one:
+
+  ```markdown
+  # CLAUDE.md
+
+  This file provides guidance to Claude Code when working in this repository.
+
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If it exists** but has no `## Contributor Conventions` section, append:
+
+  ```markdown
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If `## Contributor Conventions` already exists**, just add the following line (if not already present):
+
+For **Node/Web** projects:
+> `Linting: enforced by pre-commit hooks (lint-staged). Run \`npm run lint\` manually. markdownlint covers \`*.md\` files.`
+
+For **Python** projects:
+> `Linting: enforced by pre-commit hooks (ruff). Run \`ruff check .\` and \`ruff format --check .\` manually.`
+
+For **Go** projects:
+> `Linting: enforced by golangci-lint. Run \`golangci-lint run\` manually.`
+
+For **Rust** projects:
+> `Linting: enforced by clippy and rustfmt. Run \`cargo clippy\` and \`cargo fmt --check\` manually.`

@@ -60,15 +60,28 @@ cp assets/templates/feature-request.yml .github/ISSUE_TEMPLATE/feature-request.y
 
 Use the AskUserQuestion tool: "What is the project label name for issue forms? (e.g. 'my-app', used as `project: my-app` label — press Enter to skip)"
 
-If they provide a name, also use the AskUserQuestion tool: "Any additional labels to add to issue forms? (comma-separated, or press Enter to skip)"
-
-Update the `labels:` field in each YAML template to include project-specific labels.
+Update the `labels:` field in each YAML template with the provided label.
 
 ---
 
 ## Step 3: CODEOWNERS
 
-Use the AskUserQuestion tool: "How should code ownership be structured? Options: (1) single owner @username, (2) by directory (e.g. frontend/backend), (3) by file type (e.g. *.tf for infra). Describe your team's structure, or press Enter for single-owner default:"
+First, infer ownership structure from the repo:
+
+```bash
+# Check for multi-team directory layout
+ls src/frontend src/backend src/web src/api 2>/dev/null
+
+# Check for infra/data file types
+ls *.tf *.sql 2>/dev/null
+
+# Check existing git authors (most common contributor = likely owner)
+git log --format='%ae' | sort | uniq -c | sort -rn | head -5
+```
+
+- If a clear multi-team directory structure exists → use directory-based ownership
+- If only one contributor or a solo project → use single-owner `* @username` (derive username from `git log`)
+- If neither is determinable → use the AskUserQuestion tool: "How should code ownership be structured? (1) single owner @username, (2) by directory, (3) by file type — or describe your team:"
 
 Create `.github/CODEOWNERS` from `assets/templates/CODEOWNERS.template`.
 Replace the placeholder entries with the actual GitHub usernames or team names.
@@ -116,10 +129,7 @@ gh api \
   --field allow_deletions=false
 ```
 
-Before running, use the AskUserQuestion tool:
-
-- "How many required reviewers for PRs? (default: 1)"
-- "Should admins be exempt from branch protection? (yes/no, default: no)"
+Run with defaults: 1 required reviewer, admins exempt (`enforce_admins=false`). Apply as-is.
 
 **Note:** Required status checks (`contexts`) should be added after the CI workflow
 has run at least once and the check names are known. Leave empty initially.
@@ -151,8 +161,27 @@ review conventions for this project.
 
 Check if `CLAUDE.md` has a `## Contributor Conventions` section:
 
-- **If it doesn't exist**: create the section first (see project-scaffold Step 9 for the base template)
-- **Then add** the following line to the section (if not already present):
+- **If it doesn't exist**: create a minimal one:
+
+  ```markdown
+  # CLAUDE.md
+
+  This file provides guidance to Claude Code when working in this repository.
+
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If it exists** but has no `## Contributor Conventions` section, append:
+
+  ```markdown
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If `## Contributor Conventions` already exists**, just add the following line (if not already present):
 
 > `PRs: all pull requests must use the PR template (.github/pull_request_template.md). Branch protection requires at least 1 approving review before merge.`
 

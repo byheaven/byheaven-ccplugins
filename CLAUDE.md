@@ -38,6 +38,26 @@ All plugins must be registered in `.claude-plugin/marketplace.json`. Add an entr
 - Skills go in `skills/<skill-name>/SKILL.md`; asset/reference files go in subdirectories alongside the SKILL.md
 - Commands are optional — only add them when the plugin needs user-invocable slash commands with parameters
 
+## ⚠️ Skill Independence: Non-Negotiable Rule
+
+**Every skill MUST be fully self-contained and runnable in isolation.**
+
+A user may invoke any skill without ever having run any other skill first. Skills must never:
+
+- Reference steps in another skill (e.g., "see project-scaffold Step 9")
+- Assume that another skill has already created files, sections, or configurations
+- Delegate setup to a sibling skill
+
+When a skill needs something (e.g., a `CLAUDE.md` with a `## Contributor Conventions` section), it must handle all cases itself:
+
+1. **File missing** → create the minimal file from scratch
+2. **File exists, section missing** → append the section
+3. **Section exists** → add only the specific line (if not already present)
+
+Before authoring or modifying a skill, ask: *"Can I run this skill on a brand-new project without touching any other skill?"* If the answer is no, fix it.
+
+---
+
 ## Skill & Command Authoring: User Input
 
 **Always use the `AskUserQuestion` tool explicitly** when a skill or command needs input from the user. Never write vague prose like "ask the user for X" — Claude will skip the tool and ask inline in text instead.

@@ -34,6 +34,27 @@ Determine:
 - **Test command**: from package.json scripts / pyproject.toml / Makefile — if unclear, use the AskUserQuestion tool: "What command runs your tests? (e.g. npm test, pytest, go test ./...)"
 - **Existing CI**: avoid overwriting workflows with the same purpose
 
+**Critical check for Node projects — lockfile:**
+
+If `package.json` is present but no lockfile is found (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, or `bun.lockb`), generate one automatically:
+
+```bash
+npm install
+```
+
+This creates `package-lock.json` so `npm ci` in CI has a lockfile to work from. It will be committed together with the CI workflow in Step 4.
+
+**Critical check for Node projects — scripts:**
+
+Read `package.json` and check which scripts are defined:
+
+```bash
+cat package.json | python3 -c "import sys,json; s=json.load(sys.stdin).get('scripts',{}); print('\n'.join(s.keys()))"
+# or: node -e "const p=require('./package.json'); console.log(Object.keys(p.scripts||{}).join('\n'))"
+```
+
+Note which of `lint`, `test`, `build` exist — only include CI steps for scripts that are actually defined. Remove or comment out any step whose script is missing.
+
 ---
 
 ## Step 1: Copy the Workflow Template
@@ -61,6 +82,8 @@ After copying, customize based on the detected project:
 - Set the **package manager** in the install step (npm / yarn / pnpm / bun)
 - Verify the **test command** matches `package.json` scripts (`npm test` / `npm run test` / `vitest` / `jest`)
 - For web apps: adjust or remove the matrix (typically only need the LTS version)
+- **Remove or comment out the Lint step** if no `lint` script is defined in `package.json`
+- **Remove or comment out the Build step** if no `build` script is defined in `package.json`
 
 ### Python
 
@@ -92,8 +115,11 @@ mkdir -p .github/workflows
 
 ## Step 4: Commit
 
+Stage the workflow and commit. For Node projects, also stage the lockfile if it was generated in Step 0:
+
 ```bash
 git add .github/workflows/ci.yml
+git add package-lock.json   # or yarn.lock / pnpm-lock.yaml / bun.lockb — skip for non-Node
 git commit -m "ci: add GitHub Actions CI pipeline"
 ```
 
@@ -128,3 +154,35 @@ After pushing, walk the user through verifying:
 | Matrix strategies | Tests against multiple language versions to catch compatibility issues |
 | Lint before test | Fails fast on code style issues before running slower tests |
 | Build verification | Confirms the project actually compiles / bundles after tests pass |
+
+---
+
+## Step 6: Update CLAUDE.md
+
+Add a CI pointer to `CLAUDE.md` so Claude knows CI must pass before merging.
+
+Check if `CLAUDE.md` has a `## Contributor Conventions` section:
+
+- **If it doesn't exist**: create a minimal one:
+
+  ```markdown
+  # CLAUDE.md
+
+  This file provides guidance to Claude Code when working in this repository.
+
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If it exists** but has no `## Contributor Conventions` section, append:
+
+  ```markdown
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If `## Contributor Conventions` already exists**, just add the following line (if not already present):
+
+> `CI (\`ci.yml\`) must pass before merging to main. Check the Actions tab if a run fails.`

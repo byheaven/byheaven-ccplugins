@@ -1,4 +1,6 @@
 # Node.js / Web
+# Note: package-lock.json / yarn.lock / pnpm-lock.yaml / bun.lockb are intentionally
+# NOT listed here. Always commit your lockfile. npm ci requires package-lock.json.
 node_modules/
 npm-debug.log*
 yarn-debug.log*

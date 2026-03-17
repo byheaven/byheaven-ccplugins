@@ -52,10 +52,7 @@ combine the relevant sections into one `dependabot.yml`.
 
 ## Step 2: Configure Update Schedule
 
-Use the AskUserQuestion tool: "How often should Dependabot check for updates? weekly (default) / monthly / daily"
-
-The templates default to weekly. Change `interval: "weekly"` to `"monthly"` or
-`"daily"` as requested.
+Use the default `interval: "weekly"`. No change needed unless the project has a specific requirement.
 
 ---
 
@@ -70,7 +67,7 @@ This workflow:
 3. Auto-approves and merges patch and minor updates
 4. Leaves major updates for manual review
 
-Use the AskUserQuestion tool: "Should minor version updates also be auto-merged? Semver guarantees backwards compatibility for minor bumps. (yes/no, default: yes)"
+Minor updates are auto-merged by default (semver guarantees backwards compatibility for minor bumps). The workflow handles patch and minor; major updates require manual review.
 
 **Note:** Auto-merge requires the repository setting "Allow auto-merge" to be enabled:
 Settings → General → Pull Requests → Allow auto-merge
@@ -117,8 +114,27 @@ are handled in this project.
 
 Check if `CLAUDE.md` has a `## Contributor Conventions` section:
 
-- **If it doesn't exist**: create the section first (see project-scaffold Step 9 for the base template)
-- **Then add** the following line to the section (if not already present):
+- **If it doesn't exist**: create a minimal one:
+
+  ```markdown
+  # CLAUDE.md
+
+  This file provides guidance to Claude Code when working in this repository.
+
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If it exists** but has no `## Contributor Conventions` section, append:
+
+  ```markdown
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If `## Contributor Conventions` already exists**, just add the following line (if not already present):
 
 > `Dependencies: Dependabot opens PRs for updates automatically. Patch and minor updates are auto-merged; major updates require manual review.`
 
