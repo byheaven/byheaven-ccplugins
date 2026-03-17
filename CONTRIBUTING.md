@@ -47,9 +47,10 @@ This project uses [release-please](https://github.com/googleapis/release-please)
 
 ### Before merging a Release PR
 
-Edit `CHANGELOG.md` in the PR to produce human-readable release notes:
+Release PRs are created as **drafts** automatically. Edit `CHANGELOG.md` while it's
+still a draft, then mark it ready and merge.
 
-1. Find the Release PR: `gh pr list --label "autorelease: pending"`
+1. Find the Release PR: `gh pr list --label "autorelease: pending" --draft`
 2. Check out the branch: `gh pr checkout <number>`
 3. Open `CHANGELOG.md` and find the new `## [x.x.x] - YYYY-MM-DD` section
 4. Rewrite it following [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md)

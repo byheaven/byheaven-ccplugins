@@ -133,6 +133,10 @@ In the GitHub repo → Settings → Actions → General:
 
 Remind the user to check these settings — they are off by default on new repos.
 
+> **Note:** Release PRs are created as **drafts** by default (`draft-pull-request: true`).
+> This gives you time to edit `CHANGELOG.md` before the PR is visible for review.
+> Mark the PR as "Ready for review" (or merge directly) once the changelog is polished.
+
 ---
 
 ## Step 3: Tag-Triggered Release Workflow
