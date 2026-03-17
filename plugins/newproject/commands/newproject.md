@@ -84,8 +84,7 @@ Security (Tier 3 — recommended for public/production projects):
   [✅ or □] security-scanning  — CodeQL + dependency vulnerability review
 ```
 
-Ask: "Which skills do you want to run? (Press Enter to run all unchecked Tier 1 items,
-or specify: 'all', 'tier1', 'tier2', 'all tiers', or specific skill names)"
+Use the AskUserQuestion tool: "Which skills do you want to run? (Press Enter to run all unchecked Tier 1 items, or specify: 'all', 'tier1', 'tier2', 'all tiers', or specific skill names)"
 
 If the user passes an argument:
 - `--tier1` or `tier1`: run only Tier 1 skills that aren't done
