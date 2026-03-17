@@ -36,3 +36,19 @@ All plugins must be registered in `.claude-plugin/marketplace.json`. Add an entr
 - `plugin.json` `author` field must include both `name` and `email`
 - Skills go in `skills/<skill-name>/SKILL.md`; asset/reference files go in subdirectories alongside the SKILL.md
 - Commands are optional — only add them when the plugin needs user-invocable slash commands with parameters
+
+## Skill & Command Authoring: User Input
+
+**Always use the `AskUserQuestion` tool explicitly** when a skill or command needs input from the user. Never write vague prose like "ask the user for X" — Claude will skip the tool and ask inline in text instead.
+
+Do this:
+```
+Use the AskUserQuestion tool: "What is the project name?"
+```
+
+Not this:
+```
+Ask the user for the project name.
+```
+
+For commands, declare `AskUserQuestion` in the `allowed-tools` frontmatter field so Claude knows it is available.

@@ -32,10 +32,10 @@ Determine:
 - **What's missing**: only create files that don't already exist
 - **Git status**: whether to run `git init`
 
-Ask the user for:
-- **Project name** (if not determinable from directory name / package file)
-- **Short description** (1–2 sentences for README)
-- **License preference**: MIT (default) / Apache-2.0 / GPL-3.0 / ISC / none
+Use the AskUserQuestion tool to collect required inputs before proceeding:
+- If the project name is not determinable from the directory or package file: "What is the project name?"
+- "Please provide a short description (1–2 sentences):"
+- "Which license? MIT (default) / Apache-2.0 / GPL-3.0 / ISC / none"
 
 ---
 
@@ -60,8 +60,7 @@ Replace the placeholders:
 - `{{DESCRIPTION}}` → short description
 - `{{PROJECT_TYPE}}` → detected type for the installation section
 
-If `README.md` already exists, do not overwrite it — ask the user if they want to
-update specific sections instead.
+If `README.md` already exists, do not overwrite it — use the AskUserQuestion tool: "README.md already exists. Update specific sections, or skip? (update/skip)"
 
 ---
 
@@ -70,7 +69,7 @@ update specific sections instead.
 If no `LICENSE` file exists:
 - Default to MIT — copy `assets/templates/LICENSE-MIT.template`
 - Replace `{{YEAR}}` with the current year
-- Replace `{{AUTHOR}}` with the user's name (ask if unknown)
+- Replace `{{AUTHOR}}` with the user's name — if unknown, use the AskUserQuestion tool: "What name should appear in the LICENSE copyright line?"
 
 For other licenses, generate the appropriate text based on the user's choice.
 Apache-2.0 and GPL-3.0 require minor customization (project name, copyright holder).
@@ -102,7 +101,7 @@ If `.editorconfig` already exists, skip and notify the user.
 
 ## Step 6: CONTRIBUTING.md (optional)
 
-Ask the user: "Would you like a minimal CONTRIBUTING.md?"
+Use the AskUserQuestion tool: "Would you like a minimal CONTRIBUTING.md added to the project? (yes/no)"
 
 If yes, create from `assets/templates/CONTRIBUTING.md.template`.
 Replace `{{PROJECT_NAME}}` with the project name.

@@ -30,7 +30,7 @@ ls package-lock.json yarn.lock pnpm-lock.yaml bun.lockb 2>/dev/null
 Determine:
 - **Project type**: web / node / python / go / rust / other
 - **Package manager** (Node): npm / yarn / pnpm / bun (check for lockfile)
-- **Test command**: from package.json scripts / pyproject.toml / Makefile — ask if unclear
+- **Test command**: from package.json scripts / pyproject.toml / Makefile — if unclear, use the AskUserQuestion tool: "What command runs your tests? (e.g. npm test, pytest, go test ./...)"
 - **Existing CI**: avoid overwriting workflows with the same purpose
 
 ---

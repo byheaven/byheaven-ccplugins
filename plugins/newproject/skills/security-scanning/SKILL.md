@@ -27,7 +27,7 @@ Determine the **CodeQL language** from the project type:
 - Python → `python`
 - Go → `go`
 - Rust → Rust is not yet supported by CodeQL; skip CodeQL, add other tools
-- Other → ask or skip CodeQL
+- Other → use the AskUserQuestion tool: "CodeQL doesn't natively support this language. Skip CodeQL, or would you like guidance on alternative SAST tools? (skip/alternatives)"
 
 ---
 

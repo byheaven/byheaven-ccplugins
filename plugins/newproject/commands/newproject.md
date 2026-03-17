@@ -1,6 +1,6 @@
 ---
 description: "Orchestrates full project setup by detecting project type, inventorying existing configuration, and running selected skills in dependency order. Run this command to set up a new project end-to-end."
-allowed-tools: Bash, Read, Write, Edit, Glob, Grep
+allowed-tools: Bash, Read, Write, Edit, Glob, Grep, AskUserQuestion
 argument-hint: "[--tier1 | --all | skill-name]"
 ---
 

@@ -23,7 +23,7 @@ ls .eslintrc* eslint.config.* .prettierrc* prettier.config.* ruff.toml .pre-comm
 ```
 
 Only install tools that aren't already configured. If the project already has ESLint,
-ask before overwriting the config.
+use the AskUserQuestion tool: "An ESLint config already exists. Overwrite it with the recommended flat config, or skip ESLint setup? (overwrite/skip)"
 
 ---
 

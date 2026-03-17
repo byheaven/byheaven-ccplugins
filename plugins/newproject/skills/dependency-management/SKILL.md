@@ -51,10 +51,7 @@ combine the relevant sections into one `dependabot.yml`.
 
 ## Step 2: Configure Update Schedule
 
-Ask the user about their preferred schedule:
-- **Weekly** (default, Monday 09:00) — good for most projects
-- **Monthly** — for very stable projects where update churn is a concern
-- **Daily** — for security-focused projects (creates more PR noise)
+Use the AskUserQuestion tool: "How often should Dependabot check for updates? weekly (default) / monthly / daily"
 
 The templates default to weekly. Change `interval: "weekly"` to `"monthly"` or
 `"daily"` as requested.
@@ -71,8 +68,7 @@ This workflow:
 3. Auto-approves and merges patch and minor updates
 4. Leaves major updates for manual review
 
-**Ask the user:** Should auto-merge also apply to minor updates? (default: yes for
-minor, because semver implies backwards compatibility)
+Use the AskUserQuestion tool: "Should minor version updates also be auto-merged? Semver guarantees backwards compatibility for minor bumps. (yes/no, default: yes)"
 
 **Note:** Auto-merge requires the repository setting "Allow auto-merge" to be enabled:
 Settings → General → Pull Requests → Allow auto-merge

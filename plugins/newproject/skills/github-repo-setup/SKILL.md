@@ -57,9 +57,9 @@ cp assets/templates/bug-report.yml .github/ISSUE_TEMPLATE/bug-report.yml
 cp assets/templates/feature-request.yml .github/ISSUE_TEMPLATE/feature-request.yml
 ```
 
-Ask the user:
-- **Project name**: used in the form labels (e.g., `project: my-app`)
-- **Additional labels**: any project-specific labels to add to issue forms
+Use the AskUserQuestion tool: "What is the project label name for issue forms? (e.g. 'my-app', used as `project: my-app` label — press Enter to skip)"
+
+If they provide a name, also ask: "Any additional labels to add to issue forms? (comma-separated, or press Enter to skip)"
 
 Update the `labels:` field in each YAML template to include project-specific labels.
 
@@ -67,11 +67,7 @@ Update the `labels:` field in each YAML template to include project-specific lab
 
 ## Step 3: CODEOWNERS
 
-Ask the user:
-- Do you have a team? How is ownership divided?
-  - By area (frontend/backend/infra)?
-  - By file type?
-  - One owner for the whole repo?
+Use the AskUserQuestion tool: "How should code ownership be structured? Options: (1) single owner @username, (2) by directory (e.g. frontend/backend), (3) by file type (e.g. *.tf for infra). Describe your team's structure, or press Enter for single-owner default:"
 
 Create `.github/CODEOWNERS` from `assets/templates/CODEOWNERS.template`.
 Replace the placeholder entries with the actual GitHub usernames or team names.
@@ -118,10 +114,9 @@ gh api \
   --field allow_deletions=false
 ```
 
-**Ask the user before running:**
-- How many required reviewers? (default: 1)
-- Should CI status checks be required? (yes, but we'll add them after CI is set up)
-- Should admins be exempt from protection? (default: no)
+Before running, use the AskUserQuestion tool:
+- "How many required reviewers for PRs? (default: 1)"
+- "Should admins be exempt from branch protection? (yes/no, default: no)"
 
 **Note:** Required status checks (`contexts`) should be added after the CI workflow
 has run at least once and the check names are known. Leave empty initially.

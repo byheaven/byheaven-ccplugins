@@ -53,12 +53,12 @@ ls .github/workflows/ 2>/dev/null
 Determine:
 - **Project type**: web / node / python / go / rust / other
   - If a Node project has a web framework config file, classify as **web**
-  - Ask if ambiguous (e.g. Vite can be used for libraries too)
+  - If ambiguous, use the AskUserQuestion tool: "Is this a web app (deployed via Vercel/Netlify) or a Node.js library/tool? (web/node)"
 - **Primary branch name**: main / master (check `git remote show origin`)
 - **Package name**: from package.json / pyproject.toml / go.mod
 - **Existing workflows**: avoid overwriting anything
 
-Ask the user if anything is ambiguous before proceeding.
+If anything is ambiguous, use the AskUserQuestion tool to resolve it before proceeding.
 
 ---
 
