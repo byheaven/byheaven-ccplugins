@@ -7,7 +7,7 @@ English | [中文 README](README.zh-CN.md)
 ## Plugins
 
 - **xhs-publisher** (`plugins/xhs-publisher`) — Xiaohongshu (RED) auto publisher (browser automation)
-- **github-workflow** (`plugins/github-workflow`) — Automated GitHub release pipeline (release-please, conventional commits, AI changelog editing)
+- **newproject** (`plugins/newproject`) — Full project setup: scaffolding, CI, linting, release automation, GitHub repo config, dependency management, and security scanning
 
 ## Installation
 
@@ -29,7 +29,7 @@ Then install a specific plugin:
 
 ```text
 /plugin install xhs-publisher
-/plugin install github-workflow
+/plugin install newproject
 ```
 
 ## License

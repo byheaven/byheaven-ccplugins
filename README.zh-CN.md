@@ -7,7 +7,7 @@
 ## Plugins
 
 - **xhs-publisher**（`plugins/xhs-publisher`）— 小红书自动发布（浏览器自动化）
-- **github-workflow**（`plugins/github-workflow`）— 自动化 GitHub 发布流水线（release-please、Conventional Commits、AI 辅助 Changelog 编写）
+- **newproject**（`plugins/newproject`）— 完整项目初始化：脚手架、CI、代码规范、发布自动化、GitHub 仓库配置、依赖管理与安全扫描
 
 ## 安装方式
 
@@ -29,7 +29,7 @@ npx skills add byheaven/byheaven-skills
 
 ```text
 /plugin install xhs-publisher
-/plugin install github-workflow
+/plugin install newproject
 ```
 
 ## 许可证

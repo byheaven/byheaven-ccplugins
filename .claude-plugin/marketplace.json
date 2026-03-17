@@ -15,10 +15,10 @@
       "source": "./plugins/xhs-publisher"
     },
     {
-      "name": "github-workflow",
+      "name": "newproject",
       "version": "0.1.0",
-      "description": "Sets up a complete automated GitHub release pipeline: conventional commits, release-please, AI-assisted changelog editing, and automated GitHub Releases.",
-      "source": "./plugins/github-workflow"
+      "description": "Scaffolds and configures production-ready projects: structure, CI, linting, release automation, GitHub repository setup, dependency management, and security scanning.",
+      "source": "./plugins/newproject"
     }
   ]
 }
