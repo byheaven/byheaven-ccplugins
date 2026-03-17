@@ -1,7 +1,7 @@
-# AI Changelog Writing Guide
+# Changelog Style Guide
 
-> Feed this document as a system prompt (or prepend to your request) when asking
-> an AI to rewrite a raw auto-generated changelog section into Linear-style prose.
+> Use this guide when editing auto-generated changelog sections into Linear-style prose.
+> Works as both a human reference and an AI system prompt.
 
 ---
 

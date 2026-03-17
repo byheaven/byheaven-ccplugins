@@ -61,7 +61,7 @@ Open Claude and use this prompt:
 I need you to rewrite a raw auto-generated changelog section into
 Linear-style release notes. Follow the guidelines in this document:
 
-[paste the full contents of docs/ai-changelog-guide.md here]
+[paste the full contents of docs/changelog-style-guide.md here]
 
 ---
 

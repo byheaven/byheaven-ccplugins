@@ -18,7 +18,7 @@ Push to main → release-please maintains a Release PR
     ▼
 Developer edits CHANGELOG.md in the PR
     │  → Uses AI to rewrite raw commits into Linear-style prose
-    │  → References: references/ai-changelog-guide.md for the AI prompt
+    │  → References: references/ai-changelog-guide.md for the style guide
     ▼
 Merge Release PR → release-please creates tag
     │
@@ -200,14 +200,107 @@ found, which will fail the CI run and alert the developer.
 
 ---
 
-## Step 5: AI Changelog Guide
+## Step 5: Changelog Style Guide
 
-Copy `references/ai-changelog-guide.md` to `docs/ai-changelog-guide.md` (or wherever
-the team keeps internal docs).
+Copy `references/ai-changelog-guide.md` to `docs/changelog-style-guide.md`:
 
-This file is the system prompt / instructions for using AI to edit Release PR changelogs.
-Point the user to: **references/changelog-editing-workflow.md** for the step-by-step
-human workflow of how to use it.
+```bash
+mkdir -p docs
+cp references/ai-changelog-guide.md docs/changelog-style-guide.md
+```
+
+This is the style reference for writing Linear-quality release notes. It works as both
+a human reference and an AI system prompt.
+
+---
+
+## Step 5.5: Update CONTRIBUTING.md
+
+Add release workflow and changelog style sections to `CONTRIBUTING.md`.
+
+If `CONTRIBUTING.md` **already exists**, append the following sections before the last
+section (usually "Reporting Issues"):
+
+```markdown
+## Release Workflow
+
+This project uses [release-please](https://github.com/googleapis/release-please) for automated releases.
+
+### How it works
+
+1. Every `feat:` or `fix:` commit pushed to `main` is picked up by release-please
+2. release-please maintains an open **Release PR** (titled `chore(main): release x.x.x`)
+3. The Release PR auto-updates `CHANGELOG.md` with raw commit entries
+4. When you merge the Release PR → release-please creates a git tag → the tag triggers a GitHub Release
+
+### Before merging a Release PR
+
+Edit `CHANGELOG.md` in the PR to produce human-readable release notes:
+
+1. Find the Release PR: `gh pr list --label "autorelease: pending"`
+2. Check out the branch: `gh pr checkout <number>`
+3. Open `CHANGELOG.md` and find the new `## [x.x.x] - YYYY-MM-DD` section
+4. Rewrite it following [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md)
+5. Commit and push: `git commit -am "docs: polish changelog for x.x.x" && git push`
+6. Merge the PR: `gh pr merge --merge`
+
+### After merge
+
+- A git tag is created automatically
+- The tag-triggered workflow creates a GitHub Release with your edited changelog content
+
+## Changelog Style
+
+Changelogs follow [Linear-style prose](docs/changelog-style-guide.md) — user-centric, not commit-centric.
+
+Key principles:
+
+- **User benefit first**: describe what users *get*, not what developers *did*
+- **Bold headlines**: 1–3 punchy feature titles for the most significant changes
+- **Never modify the version header**: `## [x.x.x] - YYYY-MM-DD` is parsed by automation
+- **Omit internal changes**: `chore`, `ci`, `refactor`, `docs` commits are hidden by default
+
+See [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md) for the full guide with examples.
+```
+
+If `CONTRIBUTING.md` **does not exist**, create a minimal one:
+
+```markdown
+# Contributing to [Project Name]
+
+Thank you for your interest in contributing!
+
+## Getting Started
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feat/your-feature`
+3. Commit using [conventional commits](https://www.conventionalcommits.org/)
+4. Push and open a pull request
+
+## Commit Convention
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Type | When to use |
+|------|-------------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
+| `refactor` | Code change, no feature/fix |
+| `chore` | Maintenance, dependencies |
+
+[paste Release Workflow and Changelog Style sections here]
+
+## Reporting Issues
+
+Use the GitHub issue tracker. For bugs, include:
+- Steps to reproduce
+- Expected vs actual behavior
+- Environment details (OS, version)
+```
+
+Replace `[Project Name]` with the actual project name and insert the Release Workflow
+and Changelog Style sections in place of the placeholder comment.
 
 ---
 
@@ -270,7 +363,7 @@ git push origin main
 1. Open the Release PR on GitHub
 2. Find the `CHANGELOG.md` change in the diff
 3. Click "..." → "Edit file" on the CHANGELOG.md
-4. Use the AI changelog guide (`docs/ai-changelog-guide.md`) as a prompt:
+4. Use the changelog style guide (`docs/changelog-style-guide.md`) as a reference:
    - Feed the raw diff to Claude with the guide as context
    - Review and adjust the AI output
    - Paste the result back, keeping the `## [x.x.x] - YYYY-MM-DD` header unchanged
@@ -290,7 +383,7 @@ git push origin main
 Read these when you need more detail:
 
 - `references/changelog-editing-workflow.md` — Human workflow for editing changelogs with AI
-- `references/ai-changelog-guide.md` — Full AI prompt/instructions for Linear-style rewrites
+- `references/ai-changelog-guide.md` — Changelog style guide (deployed to target project as `docs/changelog-style-guide.md`)
 - `references/decisions.md` — Why each tool was chosen; useful when user asks about alternatives
 
 ---

@@ -56,14 +56,10 @@ Ask the user for the project name.
 
 For commands, declare `AskUserQuestion` in the `allowed-tools` frontmatter field so Claude knows it is available.
 
-## Release Workflow
+## Contributor Conventions
 
-When the user says "发版", "release", "ship", or "merge the release PR", follow these steps:
+Follow [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions, PR guidelines, and the release workflow.
+Use [docs/changelog-style-guide.md](docs/changelog-style-guide.md) when rewriting changelog sections.
 
-1. Find the release-please PR: `gh pr list --label "autorelease: pending"`
-2. Checkout the branch: `gh pr checkout <number>`
-3. Read `CHANGELOG.md` — find the topmost `## [x.x.x] - YYYY-MM-DD` section (the new release)
-4. Read `docs/ai-changelog-guide.md` for the rewriting style guide
-5. Rewrite that changelog section following the guide (Linear-style prose, user-centric, omit chore/ci/docs)
-6. Commit: `git commit -am "docs: polish changelog for x.x.x"`
-7. Push and merge: `git push && gh pr merge --merge && git checkout main && git pull`
+When the user says "release", "ship", "发版", or "merge the release PR":
+follow the Release Workflow section in CONTRIBUTING.md.
