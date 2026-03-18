@@ -1,6 +1,6 @@
 {
   "name": "newproject",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Scaffolds and configures production-ready projects: structure, CI, linting, release automation, GitHub repository setup, dependency management, and security scanning.",
   "author": {
     "name": "Yubai",

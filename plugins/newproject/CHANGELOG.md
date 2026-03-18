@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/byheaven/byheaven-skills/compare/newproject-0.3.0...newproject-0.3.1) (2026-03-18)
+
+
+### ### Bug Fixes
+
+* let release-please create tags, overwrite release body instead ([db1088a](https://github.com/byheaven/byheaven-skills/commit/db1088a1dee47befdc815b49d8e2526656959659))
+
 ## [0.3.0](https://github.com/byheaven/byheaven-skills/compare/newproject-0.2.0...newproject-0.3.0) (2026-03-18)
 
 **newproject is now a skill** — the orchestrator moves from a slash command into a
