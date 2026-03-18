@@ -1,6 +1,24 @@
 # Changelog
 
-## [Unreleased](https://github.com/byheaven/byheaven-skills/compare/newproject-0.3.0...HEAD)
+## [Unreleased](https://github.com/byheaven/byheaven-skills/compare/newproject-0.4.0...HEAD)
+
+## [0.4.0](https://github.com/byheaven/byheaven-skills/compare/newproject-0.3.0...newproject-0.4.0) (2026-03-18)
+
+**Manual curated releases** — the `release-workflow` skill now teaches a human-first
+release process instead of a `release-please` PR flow. You keep normal development on
+`main`, prepare a polished changelog section when ready, tag that exact commit, and let
+the GitHub workflow publish the release from the changelog.
+
+**Release assets now match the workflow** — the bundled workflow, extract script, and
+reference guides now all follow the same tag-based model. This makes the skill easier to
+apply to a normal project repository without translating between competing release systems.
+
+### Improvements
+
+- **Changelog format** Standardizes linked `Unreleased` headers and linked version
+  headers so compare views stay visible directly in the changelog
+- **Skill package** Removes legacy `version.txt` guidance and obsolete `release-please`
+  assets to keep the release setup simpler and more consistent
 
 ## [0.3.0](https://github.com/byheaven/byheaven-skills/compare/922be9937d3bc5cbf535624346331832b63f14a1...newproject-0.3.0) (2026-03-18)
 
