@@ -5,6 +5,16 @@ Versions follow [Semantic Versioning](https://semver.org).
 
 <!-- Entries below are maintained automatically by release-please and edited manually -->
 
+## [1.2.0](https://github.com/byheaven/byheaven-skills/compare/byheaven-skills-1.1.0...byheaven-skills-1.2.0) (2026-03-18)
+
+
+### ### Features
+
+* add agents/ and assets/ directories to all skills with Codex metadata and favicons ([944d1d9](https://github.com/byheaven/byheaven-skills/commit/944d1d9fbb56338a7b87586a244e00590310c220))
+* **newproject:** unify AGENTS.md/CLAUDE.md as single source of truth ([922be99](https://github.com/byheaven/byheaven-skills/commit/922be9937d3bc5cbf535624346331832b63f14a1))
+* **release-workflow:** add [Unreleased] section and fix release tag pipeline ([3d85946](https://github.com/byheaven/byheaven-skills/commit/3d8594637ff37139f9fc87316a68724f881182a1))
+* **release-workflow:** create Release PRs as drafts by default ([0567cd3](https://github.com/byheaven/byheaven-skills/commit/0567cd35c0f74f7bf58f87cd102c37e43f9ccd53))
+
 ## [Unreleased]
 
 ## [1.1.0](https://github.com/byheaven/byheaven-skills/compare/byheaven-skills-1.0.0...byheaven-skills-1.1.0) (2026-03-17)
