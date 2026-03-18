@@ -42,13 +42,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          ACTUAL_VERSION=$(python3 - <<'PY'
-import json
-
-with open("package.json", encoding="utf-8") as fh:
-    print(json.load(fh)["version"])
-PY
-          )
+          ACTUAL_VERSION=$(python3 -c 'import json; print(json.load(open("package.json", encoding="utf-8"))["version"])')
 
           if [[ "$ACTUAL_VERSION" != "$EXPECTED_VERSION" ]]; then
             echo "Tag version $EXPECTED_VERSION does not match package.json version $ACTUAL_VERSION" >&2

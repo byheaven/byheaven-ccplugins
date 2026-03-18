@@ -65,14 +65,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          ACTUAL_VERSION=$(python3 - "$PLUGIN_JSON" <<'PY'
-import json
-import sys
-
-with open(sys.argv[1], encoding="utf-8") as fh:
-    print(json.load(fh)["version"])
-PY
-          )
+          ACTUAL_VERSION=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["version"])' "$PLUGIN_JSON")
 
           if [[ "$ACTUAL_VERSION" != "$EXPECTED_VERSION" ]]; then
             echo "Tag version $EXPECTED_VERSION does not match $PLUGIN_JSON version $ACTUAL_VERSION" >&2
