@@ -1,0 +1,9 @@
+interface:
+  display_name: "CI Pipeline"
+  short_description: "Sets up GitHub Actions CI pipelines for any project type"
+  icon_small: "../assets/favicon.png"
+  icon_large: "../assets/favicon.png"
+  brand_color: "#3B82F6"
+
+policy:
+  allow_implicit_invocation: false

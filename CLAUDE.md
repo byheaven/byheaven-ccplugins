@@ -14,7 +14,11 @@ Every plugin must have:
 plugins/<name>/
 ├── .claude-plugin/plugin.json   # Plugin manifest (name, version, description, author with email)
 ├── skills/<skill-name>/
-│   └── SKILL.md                 # Skill frontmatter: name, description, version
+│   ├── SKILL.md                 # Skill frontmatter: name, description, version
+│   ├── agents/                  # Codex app metadata
+│   │   └── openai.yaml
+│   └── assets/                  # Skill assets: icons, images 
+│       └── favicon.png
 ├── README.md
 └── LICENSE
 ```
