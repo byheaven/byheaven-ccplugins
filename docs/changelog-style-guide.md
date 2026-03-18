@@ -132,6 +132,10 @@ title as `newproject-0.2.1 - Headline`.
 
 ## Format Rules
 
+### Version Number Default
+
+Unless the release owner explicitly chooses a different version, use [SemVer](https://semver.org/) to select the next release number.
+
 ### Version Header — Always Use Linked Headers
 
 ```markdown
@@ -335,6 +339,7 @@ relevant content appears immediately without waiting for the full page.
 
 ## Final Checklist
 
+- [ ] Version number follows SemVer by default unless the release owner explicitly chose otherwise
 - [ ] `Unreleased` is a linked header to `compare/<new-tag>...HEAD`
 - [ ] Version header is a linked header to `compare/<previous-tag>...<new-tag>`
 - [ ] 1–3 headline features present (or none if all minor fixes)

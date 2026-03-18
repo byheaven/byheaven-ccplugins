@@ -102,6 +102,10 @@ If no bold line is present, the title falls back to the tag name.
 
 ## Format Rules
 
+### Version Number Default
+
+Unless the release owner explicitly chooses a different version, use [SemVer](https://semver.org/) to select the next release number.
+
 ### Unreleased Header
 
 Always keep:
@@ -167,6 +171,7 @@ Is it breaking?
 
 ## Final Checklist
 
+- [ ] Version number follows SemVer by default unless the release owner explicitly chose otherwise
 - [ ] `Unreleased` is a linked header to `compare/<new-tag>...HEAD`
 - [ ] Version header is linked to `compare/<previous-tag>...<new-tag>`
 - [ ] 1 to 3 headline items are present when the release warrants them
