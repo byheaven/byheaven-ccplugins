@@ -1,40 +1,35 @@
 # Byheaven Skills
 
-> A monorepo of Claude Code skills/plugins by Byheaven
+> A collection of Agent skills — works with Claude Code, OpenAI Codex, and other AI tools
 
 English | [中文 README](README.zh-CN.md)
 
-## Plugins
+## Skills
 
-- **xhs-publisher** (`plugins/xhs-publisher`) — Xiaohongshu (RED) auto publisher (browser automation)
-- **newproject** (`plugins/newproject`) — Full project setup: scaffolding, CI, linting, release automation, GitHub repo config, dependency management, and security scanning
+- **xhs-publisher** — Xiaohongshu (RED) auto publisher (browser automation)
+- **newproject** — Full project setup: scaffolding, CI, linting, release automation, GitHub repo config, dependency management, and security scanning
 
 ## Installation
 
-### 1) npx skills (works with most AI tools)
+### Claude Code — plugin (recommended)
+
+Installing as a plugin gives you auto-updates, slash commands that orchestrate multiple skills
+at once (e.g. `/newproject`), and batch enable/disable of skills:
+
+```text
+/plugin marketplace add byheaven/byheaven-skills
+/plugin install newproject
+```
+
+### Other AI tools — npx skills
 
 ```bash
 npx skills add byheaven/byheaven-skills
 ```
 
-### 2) Claude Code plugin
-
-In Claude Code, run:
-
-```text
-/plugin marketplace add byheaven/byheaven-skills
-```
-
-Then install a specific plugin:
-
-```text
-/plugin install xhs-publisher
-/plugin install newproject
-```
-
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding plugins, commit conventions, and PR process.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding skills, commit conventions, and PR process.
 
 ## License
 

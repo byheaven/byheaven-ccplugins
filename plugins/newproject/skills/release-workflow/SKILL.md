@@ -465,19 +465,20 @@ Read these when you need more detail:
 
 ---
 
-## Step 9: Update CLAUDE.md
+## Step 9: Update AGENTS.md
 
-Add a release workflow pointer to `CLAUDE.md` so Claude knows the release keywords
-and where the workflow is documented.
+Add a release workflow pointer to `AGENTS.md` so AI coding assistants know the release
+keywords and where the workflow is documented.
 
-Check if `CLAUDE.md` has a `## Contributor Conventions` section:
+Check if `AGENTS.md` has a `## Contributor Conventions` section:
 
 - **If it doesn't exist**: create a minimal one:
 
   ```markdown
-  # CLAUDE.md
+  # AGENTS.md
 
-  This file provides guidance to Claude Code when working in this repository.
+  This file provides guidance to AI coding assistants (Claude Code, OpenAI Codex,
+  and others) when working with code in this repository.
 
   ## Contributor Conventions
 

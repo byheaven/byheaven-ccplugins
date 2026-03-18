@@ -154,19 +154,20 @@ git push
 
 ---
 
-## Step 7: Update CLAUDE.md
+## Step 7: Update AGENTS.md
 
-Add a GitHub repository setup pointer to `CLAUDE.md` so Claude knows the PR and
-review conventions for this project.
+Add a GitHub repository setup pointer to `AGENTS.md` so AI coding assistants know
+the PR and review conventions for this project.
 
-Check if `CLAUDE.md` has a `## Contributor Conventions` section:
+Check if `AGENTS.md` has a `## Contributor Conventions` section:
 
 - **If it doesn't exist**: create a minimal one:
 
   ```markdown
-  # CLAUDE.md
+  # AGENTS.md
 
-  This file provides guidance to Claude Code when working in this repository.
+  This file provides guidance to AI coding assistants (Claude Code, OpenAI Codex,
+  and others) when working with code in this repository.
 
   ## Contributor Conventions
 

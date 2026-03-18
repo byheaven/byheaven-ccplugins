@@ -1,35 +1,29 @@
 # Byheaven Skills
 
-> Byheaven 的 Claude Code skills/plugins 单仓库（monorepo）
+> Byheaven 出品的 Agent skills 集合——支持 Claude Code、OpenAI Codex 等 AI 工具
 
 [English README](README.md)
 
-## Plugins
+## Skills
 
-- **xhs-publisher**（`plugins/xhs-publisher`）— 小红书自动发布（浏览器自动化）
-- **newproject**（`plugins/newproject`）— 完整项目初始化：脚手架、CI、代码规范、发布自动化、GitHub 仓库配置、依赖管理与安全扫描
+- **xhs-publisher** — 小红书自动发布（浏览器自动化）
+- **newproject** — 完整项目初始化：脚手架、CI、代码规范、发布自动化、GitHub 仓库配置、依赖管理与安全扫描
 
 ## 安装方式
 
-### 1) npx skills（适用于绝大部分 AI 工具）
+### Claude Code——插件方式（推荐）
 
-```bash
-npx skills add byheaven/byheaven-skills
-```
-
-### 2) Claude Code 插件
-
-在 Claude Code 中运行：
+以插件方式安装可获得自动更新、一次性编排多个 skills 的斜杠命令（如 `/newproject`），以及 skills 的批量开关：
 
 ```text
 /plugin marketplace add byheaven/byheaven-skills
+/plugin install newproject
 ```
 
-然后安装指定插件：
+### 其他 AI 工具——npx skills
 
-```text
-/plugin install xhs-publisher
-/plugin install newproject
+```bash
+npx skills add byheaven/byheaven-skills
 ```
 
 ## 许可证

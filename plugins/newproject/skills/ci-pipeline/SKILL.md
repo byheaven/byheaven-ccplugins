@@ -157,18 +157,19 @@ After pushing, walk the user through verifying:
 
 ---
 
-## Step 6: Update CLAUDE.md
+## Step 6: Update AGENTS.md
 
-Add a CI pointer to `CLAUDE.md` so Claude knows CI must pass before merging.
+Add a CI pointer to `AGENTS.md` so AI coding assistants know CI must pass before merging.
 
-Check if `CLAUDE.md` has a `## Contributor Conventions` section:
+Check if `AGENTS.md` has a `## Contributor Conventions` section:
 
 - **If it doesn't exist**: create a minimal one:
 
   ```markdown
-  # CLAUDE.md
+  # AGENTS.md
 
-  This file provides guidance to Claude Code when working in this repository.
+  This file provides guidance to AI coding assistants (Claude Code, OpenAI Codex,
+  and others) when working with code in this repository.
 
   ## Contributor Conventions
 

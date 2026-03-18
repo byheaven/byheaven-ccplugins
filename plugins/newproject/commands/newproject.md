@@ -26,6 +26,10 @@ ls package-lock.json yarn.lock pnpm-lock.yaml bun.lockb 2>/dev/null
 # Existing foundation files
 ls README.md LICENSE .gitignore .editorconfig CONTRIBUTING.md 2>/dev/null
 
+# AI config files
+ls -la CLAUDE.md AGENTS.md 2>/dev/null
+file CLAUDE.md AGENTS.md 2>/dev/null
+
 # Existing GitHub configuration
 ls .github/workflows/ .github/pull_request_template.md .github/ISSUE_TEMPLATE/ .github/CODEOWNERS .github/dependabot.yml 2>/dev/null
 ls .github/workflows/ci* .github/workflows/release* .github/workflows/codeql* .github/workflows/dependency-review* 2>/dev/null
@@ -71,7 +75,7 @@ Then present the checklist (all items unchecked) and confirm:
 New [type] project: [name] — all skills selected by default
 
 Tier 1 — Foundation:
-  ☑ project-scaffold   — README, LICENSE (MIT), .gitignore, .editorconfig
+  ☑ project-scaffold   — README, LICENSE (MIT), .gitignore, .editorconfig, AGENTS.md + CLAUDE.md symlink
   ☑ release-workflow   — conventional commits + release-please + changelogs
   ☑ ci-pipeline        — GitHub Actions CI with test, lint, build
 
@@ -96,7 +100,7 @@ Mark what is already configured with ✅, then present the checklist:
 Project: [detected type] — [project name]
 
 Tier 1 — Foundation:
-  [✅ or □] project-scaffold   — README, LICENSE, .gitignore, .editorconfig
+  [✅ or □] project-scaffold   — README, LICENSE, .gitignore, .editorconfig, AGENTS.md + CLAUDE.md symlink
   [✅ or □] release-workflow   — conventional commits + release-please + changelogs
   [✅ or □] ci-pipeline        — GitHub Actions CI with test, lint, build
 
@@ -185,7 +189,7 @@ gh api --method PATCH "repos/${REPO}" \
 ✅ Setup complete for [project name] ([type] project)
 
 Configured:
-  ✅ project-scaffold    — README.md, LICENSE (MIT), .gitignore, .editorconfig
+  ✅ project-scaffold    — README.md, LICENSE (MIT), .gitignore, .editorconfig, AGENTS.md + CLAUDE.md symlink
   ✅ release-workflow    — commitlint + release-please + release.yml
   ✅ ci-pipeline         — .github/workflows/ci.yml (Node [version] matrix)
   ✅ code-quality        — ESLint + Prettier + lint-staged + husky pre-commit

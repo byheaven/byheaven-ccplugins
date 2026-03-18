@@ -25,6 +25,10 @@ ls README.md LICENSE .gitignore .editorconfig 2>/dev/null
 
 # Check git status
 git status 2>/dev/null || echo "git not initialized"
+
+# AI config files
+ls -la CLAUDE.md AGENTS.md 2>/dev/null
+file CLAUDE.md AGENTS.md 2>/dev/null
 ```
 
 Determine:
@@ -184,29 +188,103 @@ If the project already has commits, skip this step and let the user commit manua
 
 ---
 
-## Step 9: Update CLAUDE.md
+## Step 9: Update AGENTS.md (with CLAUDE.md symlink)
 
-Ensure `CLAUDE.md` has a `## Contributor Conventions` section so Claude knows
-where project conventions live in future sessions.
+Make `AGENTS.md` the single source of truth for AI coding assistant guidance, and
+`CLAUDE.md` a symlink pointing to it. This way Claude Code, OpenAI Codex, and any
+other AI tool all read the same file — no duplication, no drift.
 
-**If `CLAUDE.md` doesn't exist**, create a minimal one:
+### Detect the current state
+
+```bash
+[ -L CLAUDE.md ] && echo "CLAUDE.md is a symlink" || echo "CLAUDE.md is not a symlink"
+[ -f AGENTS.md ] && echo "AGENTS.md exists" || echo "AGENTS.md missing"
+[ -f CLAUDE.md ] && echo "CLAUDE.md exists" || echo "CLAUDE.md missing"
+```
+
+### Handle each state
+
+**Already unified** — `CLAUDE.md` is a symlink (to `AGENTS.md`):
+
+Skip the file setup. Just ensure `AGENTS.md` has a `## Contributor Conventions`
+section (see "Ensure Contributor Conventions" below).
+
+**State A — Neither exists** (no `CLAUDE.md`, no `AGENTS.md`):
+
+Create `AGENTS.md` from scratch:
 
 ```markdown
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code when working in this repository.
+This file provides guidance to AI coding assistants (Claude Code, OpenAI Codex,
+and others) when working with code in this repository.
 
 ## Contributor Conventions
 
 Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
 ```
 
-**If `CLAUDE.md` exists** but has no `## Contributor Conventions` section, append:
+Then create the symlink:
 
-```markdown
-## Contributor Conventions
-
-Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+```bash
+ln -s AGENTS.md CLAUDE.md
 ```
 
-**If `## Contributor Conventions` already exists**, the base pointer is present — skip.
+**State B — Only `CLAUDE.md` exists** (regular file, no `AGENTS.md`):
+
+```bash
+mv CLAUDE.md AGENTS.md
+```
+
+If the first heading in the file is `# CLAUDE.md`, rename it to `# AGENTS.md`.
+Then create the symlink:
+
+```bash
+ln -s AGENTS.md CLAUDE.md
+```
+
+**State C — Only `AGENTS.md` exists** (no `CLAUDE.md`):
+
+Just create the symlink:
+
+```bash
+ln -s AGENTS.md CLAUDE.md
+```
+
+**State D — Both exist as regular files**:
+
+Use the AskUserQuestion tool to show a merge preview:
+
+> "Both `CLAUDE.md` and `AGENTS.md` exist as separate files. I'll merge them:
+> `AGENTS.md` content is kept as the base; any unique sections from `CLAUDE.md`
+> will be appended. The merged result replaces `AGENTS.md` and `CLAUDE.md` becomes
+> a symlink. Proceed? (yes / show diff first)"
+
+Merge algorithm:
+
+1. Parse both files into sections by `##` headings
+2. Keep all sections from `AGENTS.md` as the base
+3. Append any sections from `CLAUDE.md` that are not already present in `AGENTS.md`
+4. If the title heading is `# CLAUDE.md`, normalize to `# AGENTS.md`
+5. Write the merged content to `AGENTS.md`
+6. Remove the old `CLAUDE.md` and create the symlink:
+
+```bash
+rm CLAUDE.md
+ln -s AGENTS.md CLAUDE.md
+```
+
+### Ensure Contributor Conventions
+
+After handling the state above, ensure `AGENTS.md` has a `## Contributor Conventions`
+section:
+
+- **If the section is missing**, append:
+
+  ```markdown
+  ## Contributor Conventions
+
+  Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+  ```
+
+- **If `## Contributor Conventions` already exists**, the base pointer is present — skip.
