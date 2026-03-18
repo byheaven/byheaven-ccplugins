@@ -13,11 +13,10 @@ Thank you for your interest in contributing!
 ## Adding a Plugin
 
 1. Create `plugins/<name>/` with the required structure (see [CLAUDE.md](CLAUDE.md))
-2. Create `plugins/<name>/version.txt` containing `0.1.0`
+2. Set the initial plugin version in `plugins/<name>/.claude-plugin/plugin.json` to `0.1.0`
 3. Add an entry to `.claude-plugin/marketplace.json` (no `version` field)
-4. Add the plugin to `release-please-config.json` under `packages`
-5. Add `"plugins/<name>": "0.1.0"` to `.release-please-manifest.json`
-6. Include a `README.md` and `LICENSE` in the plugin directory
+4. Create `plugins/<name>/CHANGELOG.md` with a `## [Unreleased]` section and link definitions
+5. Include a `README.md` and `LICENSE` in the plugin directory
 
 ## Commit Convention
 
@@ -39,36 +38,27 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org/):
 
 ## Release Workflow
 
-This project uses [release-please](https://github.com/googleapis/release-please) for automated per-plugin releases.
+This project uses a single tag-triggered workflow for manually curated per-plugin releases.
 
 ### How it works
 
-1. Every `feat:` or `fix:` commit pushed to `main` that touches a plugin's directory (or uses the plugin name as a commit scope) is picked up by release-please
-2. release-please maintains a separate **Release PR** per plugin that has pending changes
-3. Each Release PR auto-updates the plugin's `plugins/<name>/CHANGELOG.md` with raw commit entries
-4. When you merge a Release PR → release-please creates a git tag (e.g., `newproject-0.2.1`) → the tag triggers a GitHub Release
+1. Day-to-day PRs merge into `main` normally. No Release PR is created and `CHANGELOG.md` is not rewritten automatically.
+2. When you want to release a plugin, manually edit `plugins/<name>/CHANGELOG.md` and add a new curated section `## [x.y.z] - YYYY-MM-DD`.
+3. Update the bottom compare links so `[unreleased]` points from the new tag to `HEAD`, and the new version link compares the previous plugin tag to the new plugin tag.
+4. Bump `plugins/<name>/.claude-plugin/plugin.json` to the same version.
+5. Commit those changes on `main` in one human-authored release commit.
+6. Create and push tag `<plugin>-<version>` on that same commit, for example `newproject-0.2.1`.
+7. The tag triggers `.github/workflows/release.yml`, which validates the version and changelog section, extracts the release notes, and creates or updates the GitHub Release.
 
-### Before merging a Release PR
+### Release checklist
 
-Release PRs are created as **drafts** automatically. Edit the plugin's changelog while it's
-still a draft, then mark it ready and merge.
+1. Edit `plugins/<name>/CHANGELOG.md` following [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md)
+2. Bump `plugins/<name>/.claude-plugin/plugin.json`
+3. Commit the release changes on `main`
+4. Tag that exact commit: `git tag <plugin>-<version>`
+5. Push the commit and tag: `git push origin main --follow-tags`
 
-1. Find the Release PR: `gh pr list --label "autorelease: pending" --draft`
-2. Check out the branch: `gh pr checkout <number>`
-3. Open `plugins/<name>/CHANGELOG.md` and find the new `## [x.x.x] - YYYY-MM-DD` section
-4. Rewrite it following [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md)
-5. Update the `[unreleased]` link definition at the bottom of the changelog
-   to compare from the new version tag (e.g., `...compare/newproject-0.2.1...HEAD`)
-6. Commit and push: `git commit -am "docs: polish changelog for <plugin> x.x.x" && git push`
-7. Mark as ready: `gh pr ready <number>`
-8. Merge the PR: `gh pr merge --merge`
-
-> **Claude users:** say "release" or "发版" — Claude reads this workflow from CLAUDE.md and executes it automatically.
-
-### After merge
-
-- A git tag is created automatically (e.g., `newproject-0.2.1`)
-- The tag-triggered workflow creates a GitHub Release with your edited changelog content
+> **AI assistant users:** when the user says "release", "ship", or "发版", follow this workflow from `CONTRIBUTING.md`.
 
 ## Changelog Style
 
@@ -79,7 +69,7 @@ Key principles:
 - **User benefit first**: describe what users *get*, not what developers *did*
 - **Bold headlines**: 1–3 punchy feature titles for the most significant changes
 - **Never modify the version header**: `## [x.x.x] - YYYY-MM-DD` is parsed by automation
-- **Omit internal changes**: `chore`, `ci`, `refactor`, `docs` commits are hidden by default
+- **Omit internal changes**: `chore`, `ci`, `refactor`, `docs` should usually stay out unless they matter to plugin users
 
 See [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md) for the full guide with examples.
 

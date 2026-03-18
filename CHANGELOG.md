@@ -6,7 +6,7 @@
 All notable changes to this project will be documented in this file.
 Versions follow [Semantic Versioning](https://semver.org).
 
-<!-- Archived — no longer updated by release-please -->
+<!-- Archived — plugin release notes now live in plugins/<name>/CHANGELOG.md -->
 
 ## [Unreleased]
 

@@ -78,24 +78,22 @@ Ask the user for the project name.
 
 ## Versioning
 
-Each plugin is versioned independently using [release-please](https://github.com/googleapis/release-please).
+Each plugin is versioned independently through manually curated releases.
 The authoritative version lives in each plugin's `.claude-plugin/plugin.json`.
 
-- Conventional commits scoped to a plugin name (e.g. `feat(newproject): ...`) trigger that plugin's version bump
 - Each plugin has its own changelog at `plugins/<name>/CHANGELOG.md`
 - Tags follow the pattern `<plugin-name>-<version>` (e.g. `newproject-0.2.1`)
 - New plugins start at `0.1.0` by default
 
 When adding a new plugin, also:
 
-1. Create `plugins/<name>/version.txt` containing `0.1.0` (required by release-please)
-2. Add a package entry to `release-please-config.json`
-3. Add `"plugins/<name>": "0.1.0"` to `.release-please-manifest.json`
+1. Set `plugins/<name>/.claude-plugin/plugin.json` to `0.1.0`
+2. Create `plugins/<name>/CHANGELOG.md` with a `## [Unreleased]` section and compare links
 
 ## Contributor Conventions
 
 Follow [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions, PR guidelines, and the release workflow.
 Use [docs/changelog-style-guide.md](docs/changelog-style-guide.md) when rewriting changelog sections.
 
-When the user says "release", "ship", "发版", or "merge the release PR":
+When the user says "release", "ship", or "发版":
 follow the Release Workflow section in CONTRIBUTING.md.

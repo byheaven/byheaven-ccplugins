@@ -1,14 +1,13 @@
 # .github/workflows/release.yml
-# Responsibility: Triggered by tag push (created by release-please after PR merge).
-# Overwrites the auto-generated GitHub Release body with the human-edited CHANGELOG.md content.
-# No publish step — this is a Claude plugin monorepo distributed via marketplace.
+# Responsibility: Publish a GitHub Release from a manually curated plugin changelog.
+# Triggered only by pushing a plugin release tag that points at a human-authored release commit.
 
 name: Release
 
 on:
   push:
     tags:
-      - '*-[0-9]+.[0-9]+.[0-9]+'
+      - '*-*.*.*'
 
 permissions:
   contents: write
@@ -21,26 +20,73 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Parse plugin name and version from the tag (e.g. newproject-0.2.1)
       - name: Parse tag
         id: parse
         env:
           REF_NAME: ${{ github.ref_name }}
         run: |
-          VERSION=$(echo "$REF_NAME" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$')
-          COMPONENT="${REF_NAME%-$VERSION}"
-          echo "component=$COMPONENT" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
 
-      # Extract this version's section from the plugin's human-edited CHANGELOG.md
+          VERSION=$(echo "$REF_NAME" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$')
+          if [[ -z "$VERSION" ]]; then
+            echo "Tag must end with a semantic version: $REF_NAME" >&2
+            exit 1
+          fi
+
+          COMPONENT="${REF_NAME%-$VERSION}"
+          PLUGIN_DIR="plugins/$COMPONENT"
+          PLUGIN_JSON="$PLUGIN_DIR/.claude-plugin/plugin.json"
+          CHANGELOG_FILE="$PLUGIN_DIR/CHANGELOG.md"
+
+          if [[ ! -d "$PLUGIN_DIR" ]]; then
+            echo "Plugin directory not found for tag $REF_NAME: $PLUGIN_DIR" >&2
+            exit 1
+          fi
+
+          if [[ ! -f "$PLUGIN_JSON" ]]; then
+            echo "Plugin manifest not found: $PLUGIN_JSON" >&2
+            exit 1
+          fi
+
+          if [[ ! -f "$CHANGELOG_FILE" ]]; then
+            echo "Plugin changelog not found: $CHANGELOG_FILE" >&2
+            exit 1
+          fi
+
+          echo "component=$COMPONENT" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "plugin_json=$PLUGIN_JSON" >> "$GITHUB_OUTPUT"
+          echo "changelog_file=$CHANGELOG_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Validate plugin version
+        env:
+          EXPECTED_VERSION: ${{ steps.parse.outputs.version }}
+          PLUGIN_JSON: ${{ steps.parse.outputs.plugin_json }}
+        run: |
+          set -euo pipefail
+
+          ACTUAL_VERSION=$(python3 - "$PLUGIN_JSON" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as fh:
+    print(json.load(fh)["version"])
+PY
+          )
+
+          if [[ "$ACTUAL_VERSION" != "$EXPECTED_VERSION" ]]; then
+            echo "Tag version $EXPECTED_VERSION does not match $PLUGIN_JSON version $ACTUAL_VERSION" >&2
+            exit 1
+          fi
+
       - name: Extract release notes from CHANGELOG.md
         env:
           REF_NAME: ${{ github.ref_name }}
-          CHANGELOG_FILE: plugins/${{ steps.parse.outputs.component }}/CHANGELOG.md
+          CHANGELOG_FILE: ${{ steps.parse.outputs.changelog_file }}
         run: |
           chmod +x scripts/extract-release-notes.sh
           ./scripts/extract-release-notes.sh "$REF_NAME"
 
-      # Build the release title: "newproject-0.2.1 - Headline" or just the tag if no headline
       - name: Read release title
         id: title
         env:
@@ -53,13 +99,20 @@ jobs:
           fi
           echo "name=$TITLE" >> "$GITHUB_OUTPUT"
 
-      # Overwrite the auto-generated release body with the human-edited changelog content
-      - name: Update GitHub Release
+      - name: Create or update GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REF_NAME: ${{ github.ref_name }}
           TITLE: ${{ steps.title.outputs.name }}
         run: |
-          gh release edit "$REF_NAME" \
-            --title "$TITLE" \
-            --notes-file RELEASE_NOTES.md
+          set -euo pipefail
+
+          if gh release view "$REF_NAME" >/dev/null 2>&1; then
+            gh release edit "$REF_NAME" \
+              --title "$TITLE" \
+              --notes-file RELEASE_NOTES.md
+          else
+            gh release create "$REF_NAME" \
+              --title "$TITLE" \
+              --notes-file RELEASE_NOTES.md
+          fi
