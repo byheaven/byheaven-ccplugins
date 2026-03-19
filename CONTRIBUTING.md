@@ -13,8 +13,8 @@ Thank you for your interest in contributing!
 ## Adding a Plugin
 
 1. Create `plugins/<name>/` with the required structure (see [CLAUDE.md](CLAUDE.md))
-2. Set the initial plugin version in `plugins/<name>/.claude-plugin/plugin.json` to `0.1.0`
-3. Add an entry to `.claude-plugin/marketplace.json` (no `version` field)
+2. Add an entry to `.claude-plugin/marketplace.json` with `name`, `version`, `category`, `tags`, `keywords`, `description`, and `source`
+3. Set the initial plugin version in that marketplace entry to `0.1.0`
 4. Create `plugins/<name>/CHANGELOG.md` with a linked `## [Unreleased](compare-url)` header
 5. Include a `README.md` and `LICENSE` in the plugin directory
 
@@ -36,6 +36,13 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org/):
 - Update documentation if needed
 - Ensure CI passes before requesting review
 
+## Language Policy
+
+- Use English for code, comments, plans, changelogs, skill content, and plugin metadata.
+- Documentation defaults to English.
+- The only standing bilingual exception is the repository README documentation, such as `README.md` and `README.zh-CN.md`.
+- Any other non-English documentation should be added only when a user explicitly asks for it.
+
 ## Release Workflow
 
 This project uses a single tag-triggered workflow for manually curated per-plugin releases.
@@ -47,17 +54,17 @@ This project uses a single tag-triggered workflow for manually curated per-plugi
 3. No Release PR is created and `CHANGELOG.md` is not rewritten automatically for you.
 4. When you want to release a plugin, manually convert the accumulated `Unreleased` notes into a new linked version section `## [x.y.z](compare-url) (YYYY-MM-DD)`.
 5. Update `## [Unreleased](compare-url)` so it points from the new tag to `HEAD`, and link the new version header from the previous plugin tag to the new plugin tag.
-6. Bump `plugins/<name>/.claude-plugin/plugin.json` to the same version.
+6. Bump the matching plugin `version` field in `.claude-plugin/marketplace.json` to the same version.
 7. Commit those changes on `main` in one human-authored release commit.
 8. Create and push tag `<plugin>-<version>` on that same commit, for example `newproject-0.2.1`.
-9. The tag triggers `.github/workflows/release.yml`, which validates the version and changelog section, extracts the release notes, and creates or updates the GitHub Release.
+9. The tag triggers `.github/workflows/release.yml`, which validates the marketplace version and changelog section, extracts the release notes, and creates or updates the GitHub Release.
 
 ### Release checklist
 
 1. Confirm `plugins/<name>/CHANGELOG.md` already contains the ongoing `Unreleased` notes gathered during normal development
 2. Edit `plugins/<name>/CHANGELOG.md` following [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md)
 3. Move the `Unreleased` notes into the new linked release section and reset `Unreleased` to point from the new tag to `HEAD`
-4. Bump `plugins/<name>/.claude-plugin/plugin.json`
+4. Bump the matching plugin `version` field in `.claude-plugin/marketplace.json`
 5. Commit the release changes on `main`
 6. Tag that exact commit: `git tag <plugin>-<version>`
 7. Push the commit and tag: `git push origin main --follow-tags`

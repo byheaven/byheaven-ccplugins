@@ -314,15 +314,15 @@ Claude 会根据内容自动生成标题，并请求确认：
 
 ```
 xhs-publisher/
-├── .claude-plugin/
-│   └── plugin.json          # 插件清单
-├── commands/
-│   └── publish.md           # 发布命令
 ├── skills/
 │   └── xhs-publisher/
-│       └── SKILL.md         # 小红书平台知识库
-└── README.md                # 本文档
+│       └── SKILL.md         # Xiaohongshu platform knowledge
+├── README.md                # This document
+└── LICENSE
 ```
+
+Plugin metadata and versions are managed centrally in
+`.claude-plugin/marketplace.json` at the repository root.
 
 ### 核心技术
 

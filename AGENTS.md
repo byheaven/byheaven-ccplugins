@@ -17,7 +17,6 @@ Every plugin must have:
 
 ```
 plugins/<name>/
-├── .claude-plugin/plugin.json   # Plugin manifest (name, version, description, author with email)
 ├── skills/<skill-name>/
 │   ├── SKILL.md                 # Skill frontmatter: name, description, version
 │   ├── agents/                  # Codex app metadata
@@ -32,12 +31,13 @@ No `AGENTS.md` inside individual plugins — this root file covers all of them.
 
 ## Marketplace Registration
 
-All plugins must be registered in `.claude-plugin/marketplace.json`. Add an entry to the `plugins` array with `name`, `description`, and `source` (relative path). Do **not** include a `version` field — the authoritative version lives in each plugin's own `.claude-plugin/plugin.json`.
+All plugins must be registered in `.claude-plugin/marketplace.json`. Add an entry to the `plugins` array with `name`, `version`, `category`, `tags`, `keywords`, `description`, and `source` (relative path). The marketplace entry is the authoritative source for plugin metadata and release versioning.
 
 ## Authoring Conventions
 
-- All content (code, comments, docs) must be in **English**
-- `plugin.json` `author` field must include both `name` and `email`
+- All code, comments, plans, changelogs, skill content, and plugin metadata must be in **English**
+- Documentation defaults to **English**. The only standing exception is bilingual repository README documentation such as `README.md` and `README.zh-CN.md`. Any other non-English content requires an explicit user request.
+- `.claude-plugin/marketplace.json` `owner` field must include both `name` and `email`
 - Skills go in `skills/<skill-name>/SKILL.md`; asset/reference files go in subdirectories alongside the SKILL.md
 
 ## ⚠️ Skill Independence: Non-Negotiable Rule
@@ -79,7 +79,7 @@ Ask the user for the project name.
 ## Versioning
 
 Each plugin is versioned independently through manually curated releases.
-The authoritative version lives in each plugin's `.claude-plugin/plugin.json`.
+The authoritative version lives in that plugin's entry inside `.claude-plugin/marketplace.json`.
 
 - Each plugin has its own changelog at `plugins/<name>/CHANGELOG.md`
 - Tags follow the pattern `<plugin-name>-<version>` (e.g. `newproject-0.2.1`)
@@ -87,7 +87,7 @@ The authoritative version lives in each plugin's `.claude-plugin/plugin.json`.
 
 When adding a new plugin, also:
 
-1. Set `plugins/<name>/.claude-plugin/plugin.json` to `0.1.0`
+1. Add the plugin entry to `.claude-plugin/marketplace.json` with `version` set to `0.1.0`, plus `category`, `tags`, and `keywords`
 2. Create `plugins/<name>/CHANGELOG.md` with a linked `## [Unreleased](compare-url)` header
 
 ## Contributor Conventions

@@ -15,6 +15,7 @@
 *.njsproj
 *.sln
 *.sw?
+*.local.*
 
 # Node.js
 node_modules/

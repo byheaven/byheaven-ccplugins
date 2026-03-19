@@ -1,6 +1,11 @@
 # Changelog
 
-## [Unreleased](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.0...HEAD)
+## [Unreleased](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.1...HEAD)
+
+## [0.5.1](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.0...newproject-0.5.1) (2026-03-19)
+
+**Marketplace-managed metadata** — plugin version and description management now
+live in the root `marketplace.json` registry, and the per-plugin manifest is gone.
 
 ## [0.5.0](https://github.com/byheaven/byheaven-skills/compare/newproject-0.4.0...newproject-0.5.0) (2026-03-19)
 

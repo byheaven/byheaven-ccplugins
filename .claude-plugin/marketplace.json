@@ -5,16 +5,48 @@
     "name": "Yubai",
     "email": "byheaven0912@gmail.com"
   },
-  "description": "A monorepo of Claude Code skills/plugins by Byheaven.",
+  "description": "A collection of agent skills for code and productive work, built to help you set up faster, automate repetitive tasks, and get real work done with less friction.",
   "plugins": [
     {
       "name": "xhs-publisher",
-      "description": "Automatically publishes Xiaohongshu (RedNote) posts via browser automation (text+images and photo-note modes).",
+      "version": "0.2.1",
+      "category": "social-media",
+      "tags": [
+        "xiaohongshu",
+        "rednote",
+        "browser-automation",
+        "publishing"
+      ],
+      "keywords": [
+        "xiaohongshu",
+        "rednote",
+        "social publishing",
+        "browser automation",
+        "content publishing"
+      ],
+      "description": "Browser-automated Xiaohongshu (RedNote) publishing for text-and-image posts and photo-note workflows.",
       "source": "./plugins/xhs-publisher"
     },
     {
       "name": "newproject",
-      "description": "Self-contained end-to-end project setup packaged as a plugin and standalone skill: scaffold, CI, linting, release automation, GitHub repo setup, dependency management, and security scanning.",
+      "version": "0.5.1",
+      "category": "developer-tools",
+      "tags": [
+        "project-setup",
+        "scaffolding",
+        "ci-cd",
+        "code-quality",
+        "security"
+      ],
+      "keywords": [
+        "project setup",
+        "repository bootstrap",
+        "ci cd",
+        "release automation",
+        "dependency management",
+        "security scanning"
+      ],
+      "description": "Self-contained project setup for new or existing repositories: foundation, code quality, CI, release automation, GitHub configuration, dependency management, and security scanning.",
       "source": "./plugins/newproject"
     }
   ]

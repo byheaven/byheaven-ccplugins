@@ -26,10 +26,6 @@ Tier 3 — Security
   security scanning
 ```
 
-The plugin still bundles the older focused setup skills for compatibility and
-advanced direct use, but they are no longer required for normal `newproject`
-usage.
-
 ## Installation
 
 ### Claude Code plugin

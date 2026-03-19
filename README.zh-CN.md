@@ -1,8 +1,10 @@
 # Byheaven Skills
 
-> Byheaven 出品的 Agent skills 集合——支持 Claude Code、OpenAI Codex 等 AI 工具
+> 一组面向代码与高效工作的 Agent skills，帮助你更快完成初始化、自动化重复任务，并以更少的阻力推进真正的工作。
 
 [English README](README.md)
+
+这个仓库收集的是可以直接投入使用的实用型 Agent 工作流：项目初始化、内容发布，以及能减少重复劳动、帮助更快交付的可复用自动化能力。
 
 ## Skills
 
@@ -13,11 +15,10 @@
 
 ### Claude Code——插件方式（推荐）
 
-以插件方式安装可获得自动更新、一次性编排多个 skills 的斜杠命令（如 `/newproject`），以及 skills 的批量开关：
+以插件方式安装可获得自动更新、一次性编排多个 skills 的斜杠命令，以及 skills 的批量开关：
 
 ```text
 /plugin marketplace add byheaven/byheaven-skills
-/plugin install newproject
 ```
 
 ### 其他 AI 工具——npx skills

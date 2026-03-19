@@ -35,7 +35,7 @@ jobs:
 
           COMPONENT="${REF_NAME%-$VERSION}"
           PLUGIN_DIR="plugins/$COMPONENT"
-          PLUGIN_JSON="$PLUGIN_DIR/.claude-plugin/plugin.json"
+          MARKETPLACE_FILE=".claude-plugin/marketplace.json"
           CHANGELOG_FILE="$PLUGIN_DIR/CHANGELOG.md"
 
           if [[ ! -d "$PLUGIN_DIR" ]]; then
@@ -43,8 +43,8 @@ jobs:
             exit 1
           fi
 
-          if [[ ! -f "$PLUGIN_JSON" ]]; then
-            echo "Plugin manifest not found: $PLUGIN_JSON" >&2
+          if [[ ! -f "$MARKETPLACE_FILE" ]]; then
+            echo "Marketplace file not found: $MARKETPLACE_FILE" >&2
             exit 1
           fi
 
@@ -55,20 +55,39 @@ jobs:
 
           echo "component=$COMPONENT" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "plugin_json=$PLUGIN_JSON" >> "$GITHUB_OUTPUT"
+          echo "marketplace_file=$MARKETPLACE_FILE" >> "$GITHUB_OUTPUT"
           echo "changelog_file=$CHANGELOG_FILE" >> "$GITHUB_OUTPUT"
 
-      - name: Validate plugin version
+      - name: Validate marketplace version
         env:
           EXPECTED_VERSION: ${{ steps.parse.outputs.version }}
-          PLUGIN_JSON: ${{ steps.parse.outputs.plugin_json }}
+          COMPONENT: ${{ steps.parse.outputs.component }}
+          MARKETPLACE_FILE: ${{ steps.parse.outputs.marketplace_file }}
         run: |
           set -euo pipefail
 
-          ACTUAL_VERSION=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["version"])' "$PLUGIN_JSON")
+          ACTUAL_VERSION=$(python3 - "$MARKETPLACE_FILE" "$COMPONENT" <<'PY'
+          import json
+          import sys
+
+          marketplace_file, component = sys.argv[1:]
+          plugins = json.load(open(marketplace_file, encoding="utf-8"))["plugins"]
+          for plugin in plugins:
+              if plugin["name"] == component:
+                  version = plugin.get("version")
+                  if not version:
+                      raise SystemExit(
+                          f"Plugin entry {component} has no version in {marketplace_file}"
+                      )
+                  print(version)
+                  raise SystemExit(0)
+
+          raise SystemExit(f"Plugin entry {component} not found in {marketplace_file}")
+          PY
+          )
 
           if [[ "$ACTUAL_VERSION" != "$EXPECTED_VERSION" ]]; then
-            echo "Tag version $EXPECTED_VERSION does not match $PLUGIN_JSON version $ACTUAL_VERSION" >&2
+            echo "Tag version $EXPECTED_VERSION does not match marketplace version $ACTUAL_VERSION" >&2
             exit 1
           fi
 
