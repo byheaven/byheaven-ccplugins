@@ -57,6 +57,8 @@ This project uses a single tag-triggered workflow for manually curated per-plugi
 6. Bump the matching plugin `version` field in `.claude-plugin/marketplace.json` to the same version.
 7. Commit those changes on `main` in one human-authored release commit.
 8. Create and push tag `<plugin>-<version>` on that same commit, for example `newproject-0.2.1`.
+   If tag signing is enabled, prefer `GIT_EDITOR=true git tag -s -m "release <plugin> <version>" <plugin>-<version>` so the command does not block on an editor in non-interactive environments.
+   If tag signing is disabled, prefer `git tag -a -m "release <plugin> <version>" <plugin>-<version>`.
 9. The tag triggers `.github/workflows/release.yml`, which validates the marketplace version and changelog section, extracts the release notes, and creates or updates the GitHub Release.
 
 ### Release checklist
@@ -66,7 +68,10 @@ This project uses a single tag-triggered workflow for manually curated per-plugi
 3. Move the `Unreleased` notes into the new linked release section and reset `Unreleased` to point from the new tag to `HEAD`
 4. Bump the matching plugin `version` field in `.claude-plugin/marketplace.json`
 5. Commit the release changes on `main`
-6. Tag that exact commit: `git tag <plugin>-<version>`
+6. Tag that exact commit with an explicit message:
+   `GIT_EDITOR=true git tag -s -m "release <plugin> <version>" <plugin>-<version>`
+   If tag signing is disabled, use:
+   `git tag -a -m "release <plugin> <version>" <plugin>-<version>`
 7. Push the commit and tag: `git push origin main --follow-tags`
 
 > **AI assistant users:** when the user says "release", "ship", or "发版", follow this workflow from `CONTRIBUTING.md`.

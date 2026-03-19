@@ -517,13 +517,13 @@ If `CHANGELOG.md` is missing, create it with linked headers:
 All notable changes to this project will be documented in this file.
 Versions follow [Semantic Versioning](https://semver.org).
 
-## [Unreleased](https://github.com/OWNER/REPO/compare/v0.0.0...HEAD)
+## [Unreleased](https://github.com/OWNER/REPO/compare/0.0.0...HEAD)
 ```
 
 For real releases, use this format:
 
 ```markdown
-## [1.2.0](https://github.com/OWNER/REPO/compare/v1.1.0...v1.2.0) (2026-03-18)
+## [1.2.0](https://github.com/OWNER/REPO/compare/1.1.0...1.2.0) (2026-03-18)
 ```
 
 Rules:
@@ -531,6 +531,7 @@ Rules:
 - `Unreleased` must always be a linked header
 - every commit or merge to `main` must manually add a short user-facing changelog entry under `Unreleased`
 - each release header must compare the previous tag to the new tag
+- default release tags should omit a leading `v` unless the repository already has an established `v`-prefixed tag history
 - the first bold line in a release section becomes the GitHub Release title
 
 #### CONTRIBUTING.md and AGENTS.md
@@ -543,8 +544,12 @@ Ensure `CONTRIBUTING.md` documents this release flow:
 4. on release day, convert the accumulated `Unreleased` notes into the new version section
 5. bump the version file if the project uses one
 6. commit the release changes
-7. tag that exact commit
-8. push the commit and tag
+7. tag that exact commit with an explicit message so release tagging does not block on an editor in non-interactive environments
+
+- if tag signing is enabled, prefer `GIT_EDITOR=true git tag -s -m "release 1.2.0" 1.2.0`
+- if tag signing is disabled, prefer `git tag -a -m "release 1.2.0" 1.2.0`
+
+1. push the commit and tag
 
 Add this line to `AGENTS.md` if missing:
 
@@ -555,7 +560,7 @@ Add this line to `AGENTS.md` if missing:
 If the repo already has a version section in `CHANGELOG.md`, dry-run the extract script:
 
 ```bash
-CHANGELOG_FILE=CHANGELOG.md ./scripts/extract-release-notes.sh v1.2.0
+CHANGELOG_FILE=CHANGELOG.md ./scripts/extract-release-notes.sh 1.2.0
 ```
 
 If the script fails, fix the changelog format before calling the release setup done.

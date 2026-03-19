@@ -25,7 +25,7 @@ Collect the commits, PRs, or notes that should be covered in this release.
 You are preparing one new version section, for example:
 
 ```markdown
-## [1.2.0](https://github.com/OWNER/REPO/compare/v1.1.0...v1.2.0) (2026-03-18)
+## [1.2.0](https://github.com/OWNER/REPO/compare/1.1.0...1.2.0) (2026-03-18)
 ```
 
 ### 2. Draft the section with AI
@@ -39,9 +39,9 @@ The AI should produce only the section body, not the header.
 Add or update:
 
 ```markdown
-## [Unreleased](https://github.com/OWNER/REPO/compare/v1.2.0...HEAD)
+## [Unreleased](https://github.com/OWNER/REPO/compare/1.2.0...HEAD)
 
-## [1.2.0](https://github.com/OWNER/REPO/compare/v1.1.0...v1.2.0) (2026-03-18)
+## [1.2.0](https://github.com/OWNER/REPO/compare/1.1.0...1.2.0) (2026-03-18)
 ```
 
 Then paste the rewritten release notes below the `1.2.0` header.
@@ -50,6 +50,7 @@ Rules:
 
 - keep `Unreleased` empty
 - keep the version header linked
+- default release tags should omit a leading `v` unless the repository already has a `v`-prefixed history
 - make sure the first bold line can serve as the GitHub Release title
 
 ### 4. Bump the project version
@@ -76,7 +77,20 @@ git commit -m "chore(release): prepare 1.2.0"
 Example:
 
 ```bash
-git tag v1.2.0
+GIT_EDITOR=true git tag -s -m "release 1.2.0" 1.2.0
+git push origin main --follow-tags
+```
+
+Why this form:
+
+- `-s` creates a signed tag when the repository or user defaults require signing
+- `-m` supplies the tag message explicitly so Git does not open an editor
+- `GIT_EDITOR=true` keeps the command non-blocking in CI, agents, and other non-interactive shells
+
+If the repository does not sign tags, use:
+
+```bash
+git tag -a -m "release 1.2.0" 1.2.0
 git push origin main --follow-tags
 ```
 

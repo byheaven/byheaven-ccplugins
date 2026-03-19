@@ -1,6 +1,13 @@
 # Changelog
 
-## [Unreleased](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.2...HEAD)
+## [Unreleased](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.3...HEAD)
+
+## [0.5.3](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.2...newproject-0.5.3) (2026-03-19)
+
+- **Release workflow** Documents non-blocking signed tag commands so global
+  tag-signing defaults do not hang release steps in non-interactive shells
+- **Release conventions** Defaults release tag examples to plain semver without
+  a leading `v`, while still tolerating legacy `v`-prefixed tags during note extraction
 
 ## [0.5.2](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.1...newproject-0.5.2) (2026-03-19)
 

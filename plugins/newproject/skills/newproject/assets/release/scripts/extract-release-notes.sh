@@ -4,7 +4,7 @@
 # Extracts a single version's section from CHANGELOG.md.
 # Used by release.yml to publish GitHub Releases from manually curated changelog sections.
 #
-# Usage: ./scripts/extract-release-notes.sh v1.2.0
+# Usage: ./scripts/extract-release-notes.sh 1.2.0
 #
 # Output: RELEASE_NOTES.md (in the current directory)
 # Exit 1: if the version section is not found in CHANGELOG.md
@@ -15,11 +15,11 @@ VERSION_TAG="${1:-${GITHUB_REF_NAME:-}}"
 
 if [[ -z "$VERSION_TAG" ]]; then
   echo "❌ No version tag provided." >&2
-  echo "   Usage: $0 v1.2.0" >&2
+  echo "   Usage: $0 1.2.0" >&2
   exit 1
 fi
 
-# Extract semver from tag: handles 'v1.2.0', 'myapp-1.2.0', '1.2.0'
+# Extract semver from tag: handles '1.2.0', 'myapp-1.2.0', and legacy 'v1.2.0'
 VERSION=$(echo "$VERSION_TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 if [[ -z "$VERSION" ]]; then
   echo "❌ Could not extract semver from tag: $VERSION_TAG" >&2
