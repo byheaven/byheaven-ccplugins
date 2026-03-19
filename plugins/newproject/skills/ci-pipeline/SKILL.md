@@ -9,6 +9,9 @@ Sets up a production-ready GitHub Actions CI pipeline for any project type.
 Each workflow template includes: test execution, linting, build verification,
 dependency caching, matrix strategies, and concurrency groups to cancel stale runs.
 
+Compatibility note: `newproject` is the canonical standalone entrypoint for end-to-end
+setup. Use this focused skill only when you intentionally want CI setup by itself.
+
 ## Step 0: Read the Project
 
 Before doing anything, detect the project type and existing CI configuration:

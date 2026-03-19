@@ -9,6 +9,9 @@ Sets up linters, formatters, and pre-commit hooks to enforce consistent code sty
 automatically. Each tool is configured with production-ready defaults; adjust to
 taste after setup.
 
+Compatibility note: `newproject` is the canonical standalone entrypoint for end-to-end
+setup. Use this focused skill only when you intentionally want code quality setup by itself.
+
 ## Step 0: Read the Project
 
 ```bash

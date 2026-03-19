@@ -9,6 +9,9 @@ Sets up GitHub's built-in security tooling: CodeQL for static analysis,
 dependency review to block vulnerable dependencies in PRs, and guidance on
 enabling secret scanning.
 
+Compatibility note: `newproject` is the canonical standalone entrypoint for end-to-end
+setup. Use this focused skill only when you intentionally want security scanning by itself.
+
 ## Step 0: Read the Project
 
 ```bash

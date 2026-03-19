@@ -10,6 +10,9 @@ development stays on `main`, and releases happen only when a human prepares a cu
 changelog section, bumps the project version, tags that exact commit, and lets GitHub
 Actions publish the release from `CHANGELOG.md`.
 
+Compatibility note: `newproject` is the canonical standalone entrypoint for end-to-end
+setup. Use this focused skill only when you intentionally want release automation by itself.
+
 ## Overview of What Gets Set Up
 
 ```text

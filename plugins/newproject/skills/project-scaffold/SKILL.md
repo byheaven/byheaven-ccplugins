@@ -9,6 +9,9 @@ Sets up the essential foundation files every production project needs: README, L
 .gitignore, .editorconfig, and a clean directory structure. Detects what already exists
 and only creates what's missing.
 
+Compatibility note: `newproject` is the canonical standalone entrypoint for end-to-end
+setup. Use this focused skill only when you intentionally want scaffold work by itself.
+
 ## Step 0: Read the Project
 
 Detect the project type and inventory existing files before creating anything:

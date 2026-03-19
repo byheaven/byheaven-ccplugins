@@ -1,6 +1,6 @@
 interface:
   display_name: "Code Quality"
-  short_description: "Configures linters, formatters, and pre-commit hooks for consistent code quality"
+  short_description: "Compatibility module for standalone newproject: configures linters, formatters, and pre-commit hooks"
   icon_small: "../assets/favicon.png"
   icon_large: "../assets/favicon.png"
   brand_color: "#3B82F6"

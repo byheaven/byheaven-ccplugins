@@ -1,210 +1,892 @@
 ---
 name: newproject
-description: "Orchestrates full project setup by detecting project type, inventorying existing configuration, and running selected skills in dependency order. Use this skill when the user wants to set up a new project end-to-end, initialize a project from scratch, configure an existing project, or run multiple newproject skills at once. Also triggers on commands like 'set up my project', 'initialize everything', 'run newproject', or '/newproject'."
+description: "End-to-end project setup for Codex, Claude Code, and other AI tools. Use this when the user wants to scaffold a new project, upgrade an existing repository to a production-ready baseline, or configure project foundation, code quality, release automation, CI, GitHub repository settings, dependency management, and security scanning in one run. It includes its own templates, workflows, and scripts under `assets/`."
 ---
 
 # newproject
 
-Sets up a new or existing project end-to-end by orchestrating all newproject skills
-in the correct dependency order.
+Sets up a new or existing project end-to-end.
+It includes the templates, workflows, and scripts it needs under its own `assets/`
+directory.
+
+When this setup needs structured user input, first detect which question tool is
+available in the current host environment:
+
+- if `AskUserQuestion` is available, use `AskUserQuestion`
+- otherwise, if `request_user_input` is available, use `request_user_input`
+- if neither structured question tool is available, ask the user directly in plain text
+
+Do this detection before the first question and keep using the same question tool
+for the rest of the run.
+
+## What This Skill Sets Up
+
+```text
+Tier 1 — Foundation
+  project scaffold      README, LICENSE, .gitignore, .editorconfig, CONTRIBUTING.md
+  AGENTS.md baseline    shared AI instructions + CLAUDE.md symlink
+  release workflow      conventional commits, changelog-driven releases, release.yml
+  ci pipeline           GitHub Actions CI for the detected project type
+
+Tier 2 — Quality and Governance
+  code quality          ESLint/Prettier or Ruff/golangci-lint/rustfmt + markdownlint
+  GitHub repo setup     PR template, issue forms, CODEOWNERS, branch protection
+  dependencies          Dependabot + auto-merge workflow
+
+Tier 3 — Security
+  security scanning     CodeQL when supported, dependency review, secret scanning guidance
+```
+
+## Asset Layout
+
+All required files live inside this skill:
+
+- `assets/project-scaffold/` — README, LICENSE, CONTRIBUTING, .gitignore, .editorconfig
+- `assets/code-quality/` — ESLint, Prettier, Ruff, markdownlint, pre-commit hook
+- `assets/ci-pipeline/` — GitHub Actions CI templates
+- `assets/release-workflow/` — commitlint config, release workflow, extract script, references
+- `assets/github-repo-setup/` — PR template, issue forms, CODEOWNERS, branch protection script
+- `assets/dependency-management/` — Dependabot templates and auto-merge workflow
+- `assets/security-scanning/` — CodeQL and dependency review workflows
 
 ---
 
-## Step 1: Detect
+## Step 1: Detect the Project and Current State
+
+Inspect the repo before asking anything:
 
 ```bash
 # Project type indicators
-ls package.json pyproject.toml setup.py go.mod Cargo.toml 2>/dev/null
+ls package.json pyproject.toml setup.py requirements.txt go.mod Cargo.toml 2>/dev/null
 
-# Web framework (if Node)
-ls next.config.* nuxt.config.* vite.config.* angular.json svelte.config.* astro.config.* 2>/dev/null
-
-# Package manager lockfile (if Node)
-ls package-lock.json yarn.lock pnpm-lock.yaml bun.lockb 2>/dev/null
+# Web framework indicators
+ls next.config.* nuxt.config.* vite.config.* angular.json svelte.config.* astro.config.* remix.config.* 2>/dev/null
 
 # Existing foundation files
-ls README.md LICENSE .gitignore .editorconfig CONTRIBUTING.md 2>/dev/null
-
-# AI config files
-ls -la CLAUDE.md AGENTS.md 2>/dev/null
-file CLAUDE.md AGENTS.md 2>/dev/null
+ls README.md LICENSE .gitignore .editorconfig CONTRIBUTING.md CHANGELOG.md AGENTS.md CLAUDE.md 2>/dev/null
+file AGENTS.md CLAUDE.md 2>/dev/null
 
 # Existing GitHub configuration
-ls .github/workflows/ .github/pull_request_template.md .github/ISSUE_TEMPLATE/ .github/CODEOWNERS .github/dependabot.yml 2>/dev/null
-ls .github/workflows/ci* .github/workflows/release* .github/workflows/codeql* .github/workflows/dependency-review* 2>/dev/null
+ls .github/ 2>/dev/null
+ls .github/workflows/ 2>/dev/null
+ls .github/pull_request_template.md .github/ISSUE_TEMPLATE/ .github/CODEOWNERS .github/dependabot.yml 2>/dev/null
 
-# Code quality tooling
-ls .eslintrc* eslint.config.* prettier.config.* ruff.toml .golangci.yml rustfmt.toml .husky/ .pre-commit-config.yaml 2>/dev/null
+# Existing tooling
+ls eslint.config.* .eslintrc* prettier.config.* .prettierrc* ruff.toml .pre-commit-config.yaml .golangci.yml rustfmt.toml .markdownlint.json 2>/dev/null
+ls .husky/ 2>/dev/null
 
-# Release workflow
-ls .github/workflows/release* CHANGELOG.md 2>/dev/null
+# Existing release / CI / security workflows
+ls .github/workflows/ci* .github/workflows/release* .github/workflows/commitlint* .github/workflows/codeql* .github/workflows/dependency-review* 2>/dev/null
 
-# Git status
+# Package manager and scripts for Node projects
+ls package-lock.json yarn.lock pnpm-lock.yaml bun.lockb 2>/dev/null
+node -e "const p=require('./package.json'); console.log(JSON.stringify(p.scripts||{}, null, 2))" 2>/dev/null || true
+
+# Git state
+git status --short 2>/dev/null || echo "git not initialized"
 git remote -v 2>/dev/null || echo "no remote"
+git branch --show-current 2>/dev/null || true
 ```
+
+Determine:
+
+- **Project type**:
+  - `web` if `package.json` exists and a web framework config exists
+  - `node` if `package.json` exists without a web framework config
+  - `python` if `pyproject.toml`, `setup.py`, or `requirements.txt` exists
+  - `go` if `go.mod` exists
+  - `rust` if `Cargo.toml` exists
+  - `other` otherwise
+- **Project state**:
+  - brand new if there is no package manifest, no README, no `.github/`, and no git remote
+  - existing otherwise
+- **Package manager** for Node projects:
+  - `npm` if `package-lock.json` exists
+  - `yarn` if `yarn.lock` exists
+  - `pnpm` if `pnpm-lock.yaml` exists
+  - `bun` if `bun.lockb` exists
+  - if none exist, default to `npm`
+- **Available scripts** for Node projects:
+  - note whether `lint`, `test`, and `build` exist
+- **Version source of truth**:
+  - `package.json` for Node and web
+  - `pyproject.toml` or `setup.py` for Python
+  - `Cargo.toml` for Rust
+  - tag-only unless another version file already exists for Go or other projects
 
 ---
 
-## Step 2: Branch on Project State
+## Step 2: Choose the Run Scope
 
-### Path A — Brand new project (empty or near-empty directory)
+### Path A — Brand New Project
 
-**Trigger:** no package manifest, no README, no `.github/`, no git remote.
+For a brand-new directory, collect the basic project context before recommending a stack.
 
-Gather the essentials before showing any checklist:
+Use the `AskUserQuestion`/`request_user_input` tool explicitly:
 
-- If project name is not clear from the directory name, use the AskUserQuestion tool: "What is the project name?"
-- Use the AskUserQuestion tool: "Short description (1–2 sentences):"
+- if the project name is not obvious from the directory name:
+  - "What is the project name?"
+- always:
+  - "Please provide a short description (1-2 sentences)."
 
-Based on the project name and description, reason about the most suitable tech stack
-(language, framework, tooling) and present a recommendation with rationale. For example:
+Then use the project name and description to suggest the best default stack, for example:
 
-> "Based on your description, I'd suggest a **Node.js + TypeScript** project using
-> Vitest for testing and ESLint/Prettier for code quality. This fits well for [reason].
-> Does this sound right, or would you prefer a different stack?"
+> "Based on your description, I suggest a Node.js + TypeScript setup with Vitest,
+> ESLint, and Prettier. That gives you a fast default for libraries and apps.
+> Confirm this stack or tell me what you prefer."
 
-Then use the AskUserQuestion tool to confirm: "Confirm tech stack, or describe what you'd prefer:"
+Use the `AskUserQuestion`/`request_user_input` tool explicitly to confirm or override the stack.
 
-Use the confirmed stack to determine the project type (node / python / go / rust / other)
-for all subsequent skill steps.
+Then show the checklist:
 
-Then present the checklist (all items unchecked) and confirm:
+```text
+New [type] project: [name]
 
-```
-New [type] project: [name] — all skills selected by default
+Tier 1 — Foundation
+  [x] scaffold and repo baseline
+  [x] release workflow
+  [x] CI pipeline
 
-Tier 1 — Foundation:
-  ☑ project-scaffold   — README, LICENSE (MIT), .gitignore, .editorconfig, AGENTS.md + CLAUDE.md symlink
-  ☑ release-workflow   — conventional commits + curated changelogs + GitHub Releases
-  ☑ ci-pipeline        — GitHub Actions CI with test, lint, build
+Tier 2 — Quality and Governance
+  [x] code quality
+  [x] GitHub repository setup
+  [x] dependency management
 
-Tier 2 — Quality & Governance:
-  ☑ code-quality       — ESLint/Prettier/Ruff + pre-commit hooks
-  ☑ github-repo-setup  — PR template, issue forms, CODEOWNERS, branch protection
-  ☑ dependency-management — Dependabot + auto-merge
-
-Tier 3 — Security:
-  ☑ security-scanning  — CodeQL + dependency vulnerability review
+Tier 3 — Security
+  [x] security scanning
 ```
 
-Use the AskUserQuestion tool: "Press Enter to run all skills, or specify what to skip: e.g. 'skip security-scanning' or 'tier1 only'"
+Use the `AskUserQuestion`/`request_user_input` tool explicitly:
 
-### Path B — Existing project
+- "Press Enter to run everything, or tell me what to skip: for example `skip security`, `tier1 only`, or `code quality only`."
 
-**Trigger:** one or more project files already exist.
+### Path B — Existing Project
 
-Mark what is already configured with ✅, then present the checklist:
+For an existing repository, do not ask for the project name or description.
+Read the repository and infer the context first.
 
-```
+Before showing the checklist, read the most relevant files that describe the project:
+
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE.md` if it exists and is not just a symlink to `AGENTS.md`
+- package metadata such as `package.json`, `pyproject.toml`, `go.mod`, or `Cargo.toml`
+- `CHANGELOG.md`
+- existing workflow files under `.github/workflows/`
+
+Then present a short understanding summary to the user before asking for scope.
+That summary should include:
+
+- the inferred project name
+- what the project appears to do
+- the detected tech stack
+- what setup already appears to exist
+- the highest-value gaps that `newproject` could fill
+
+After that summary, mark what already appears configured and default to the
+unchecked Tier 1 items first:
+
+```text
 Project: [detected type] — [project name]
 
-Tier 1 — Foundation:
-  [✅ or □] project-scaffold   — README, LICENSE, .gitignore, .editorconfig, AGENTS.md + CLAUDE.md symlink
-  [✅ or □] release-workflow   — conventional commits + curated changelogs + GitHub Releases
-  [✅ or □] ci-pipeline        — GitHub Actions CI with test, lint, build
+Tier 1 — Foundation
+  [done or empty] scaffold and repo baseline
+  [done or empty] release workflow
+  [done or empty] CI pipeline
 
-Tier 2 — Quality & Governance:
-  [✅ or □] code-quality       — ESLint/Prettier/Ruff + pre-commit hooks
-  [✅ or □] github-repo-setup  — PR template, issue forms, CODEOWNERS, branch protection
-  [✅ or □] dependency-management — Dependabot + auto-merge
+Tier 2 — Quality and Governance
+  [done or empty] code quality
+  [done or empty] GitHub repository setup
+  [done or empty] dependency management
 
-Tier 3 — Security:
-  [✅ or □] security-scanning  — CodeQL + dependency vulnerability review
+Tier 3 — Security
+  [done or empty] security scanning
 ```
 
-Use the AskUserQuestion tool: "Which skills do you want to run? (Press Enter to run all unchecked Tier 1 items, or specify: 'all', 'tier2', 'all tiers', or specific skill names)"
+Use the `AskUserQuestion`/`request_user_input` tool explicitly:
 
-If the user passed an argument when invoking the skill:
+- "Which parts should I run? Press Enter to run unchecked Tier 1 items, or say `all`, `tier2`, or specific parts."
 
-- `--tier1` / `tier1`: run only Tier 1 skills that aren't done
-- `--all` / `all`: run all skills that aren't done
-- Skill name (e.g., `ci-pipeline`): run that single skill
+Treat the selected scope as the source of truth for the rest of the run.
 
 ---
 
-## Step 3: Execute Skills in Dependency Order
+## Step 3: Foundation and Repository Baseline
 
-Run the selected skills in this exact order (skip already-done items):
+Run this section when the user selected scaffold and repo baseline.
 
-1. `project-scaffold` — no dependencies
-2. `code-quality` — uses .editorconfig from project-scaffold
-3. `release-workflow` — may share husky with code-quality
-4. `ci-pipeline` — needs project type (detected in Step 1)
-5. `github-repo-setup` — references CI status checks
-6. `dependency-management` — needs ecosystem detection
-7. `security-scanning` — adds alongside CI workflows
+### 3.1 Initialize Git if Needed
 
-For each skill, invoke it by loading the corresponding SKILL.md and following its steps.
+If the directory is not a git repo:
 
-**Shared dependency: husky**
-If both `code-quality` and `release-workflow` are in the run list, both may use husky.
-The `code-quality` skill checks for existing husky before running `husky init`.
-Run `code-quality` before `release-workflow`.
+```bash
+git init
+git checkout -b main
+```
+
+If git already exists, skip this step.
+
+### 3.2 Create or Update the Foundation Files
+
+Use only the vendored assets in this skill:
+
+- `assets/project-scaffold/templates/README.md.template`
+- `assets/project-scaffold/templates/LICENSE-MIT.template`
+- `assets/project-scaffold/templates/CONTRIBUTING.md.template`
+- `assets/project-scaffold/gitignore/`
+- `assets/project-scaffold/editorconfig/.editorconfig`
+
+Apply these rules:
+
+- `README.md`
+  - if missing, create it from the template
+  - replace `{{PROJECT_NAME}}`, `{{DESCRIPTION}}`, and `{{PROJECT_TYPE}}`
+  - if it already exists, add only missing standard sections such as installation, usage, and contributing
+- `LICENSE`
+  - default to MIT when missing
+  - replace `{{YEAR}}` with the current year
+  - replace `{{AUTHOR}}` with the user's name
+  - if the name is unknown, use the `AskUserQuestion`/`request_user_input` tool explicitly
+- `.gitignore`
+  - if missing, copy the language-appropriate template
+  - if present, append only clearly missing language-specific sections
+- `.editorconfig`
+  - if missing, copy the vendored template
+- `CONTRIBUTING.md`
+  - if missing, create it from the template
+  - if present, preserve existing content and add any missing sections later in the release workflow step
+
+### 3.3 Create Standard Directories
+
+Create only the directories that are missing:
+
+- Node or web: `src/`, `tests/`, `docs/`, `scripts/`
+- Python: `src/<package_name>/`, `tests/`, `docs/`, `scripts/`
+- Go: `cmd/<project_name>/`, `internal/`, `pkg/`, `docs/`, `scripts/`
+- Rust: `docs/`, `scripts/`
+- Other: `src/`, `tests/`, `docs/`, `scripts/`
+
+For Python, also create `src/<package_name>/__init__.py` when the package directory is new.
+
+### 3.4 Make `AGENTS.md` the Source of Truth
+
+Unify `AGENTS.md` and `CLAUDE.md` so all AI tools read the same guidance.
+
+Detect the current state:
+
+```bash
+[ -L CLAUDE.md ] && echo "CLAUDE.md is a symlink" || echo "CLAUDE.md is not a symlink"
+[ -f AGENTS.md ] && echo "AGENTS.md exists" || echo "AGENTS.md missing"
+[ -f CLAUDE.md ] && echo "CLAUDE.md exists" || echo "CLAUDE.md missing"
+```
+
+Handle each state:
+
+- **Already unified**: `CLAUDE.md` is a symlink to `AGENTS.md`
+  - keep it as-is
+- **Neither file exists**
+  - create a minimal `AGENTS.md`:
+
+    ```markdown
+    # AGENTS.md
+
+    This file provides guidance to AI coding assistants (Claude Code, OpenAI Codex,
+    and others) when working with code in this repository.
+
+    ## Contributor Conventions
+
+    Follow [CONTRIBUTING.md](CONTRIBUTING.md) for all contribution conventions.
+    ```
+
+  - then run `ln -s AGENTS.md CLAUDE.md`
+- **Only `CLAUDE.md` exists as a regular file**
+  - move it to `AGENTS.md`
+  - if its title is `# CLAUDE.md`, rename it to `# AGENTS.md`
+  - then create the symlink with `ln -s AGENTS.md CLAUDE.md`
+- **Only `AGENTS.md` exists**
+  - create the symlink with `ln -s AGENTS.md CLAUDE.md`
+- **Both exist as regular files**
+  - use the `AskUserQuestion`/`request_user_input` tool explicitly before merging
+  - keep `AGENTS.md` as the base
+  - append only the sections from `CLAUDE.md` that are not already present
+  - normalize the title to `# AGENTS.md`
+  - replace `CLAUDE.md` with the symlink
+
+After the file state is correct, ensure `AGENTS.md` includes a `## Contributor Conventions`
+section that points to `CONTRIBUTING.md`.
 
 ---
 
-## Step 4: Automate GitHub Repository Settings
+## Step 4: Code Quality and Release Workflow
 
-After all skills are committed and pushed, configure GitHub settings via `gh api`.
+Run this section when the user selected code quality, release workflow, or both.
+If both are selected for a Node project, set up code quality before release workflow
+so husky can be shared cleanly.
+
+### 4.1 Code Quality
+
+Use only the vendored assets in this skill:
+
+- `assets/code-quality/config/eslint.config.js`
+- `assets/code-quality/config/prettier.config.js`
+- `assets/code-quality/config/ruff.toml`
+- `assets/code-quality/config/.markdownlint.json`
+- `assets/code-quality/hooks/pre-commit`
+
+#### Node or Web
+
+Install the baseline tooling:
+
+```bash
+npm install --save-dev \
+  eslint \
+  @eslint/js \
+  prettier \
+  eslint-config-prettier \
+  lint-staged \
+  husky
+```
+
+For TypeScript projects, also install:
+
+```bash
+npm install --save-dev \
+  typescript-eslint \
+  @typescript-eslint/eslint-plugin \
+  @typescript-eslint/parser
+```
+
+Then:
+
+- copy `assets/code-quality/config/eslint.config.js` to `eslint.config.js` if no flat config exists
+- copy `assets/code-quality/config/prettier.config.js` to `prettier.config.js` if missing
+- add a `lint-staged` block to `package.json`:
+
+  ```json
+  {
+    "lint-staged": {
+      "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
+      "*.{json,css,md,yml,yaml}": ["prettier --write"],
+      "*.md": ["markdownlint-cli2 --fix"]
+    }
+  }
+  ```
+
+- initialize husky only if `.husky/` does not already exist:
+
+  ```bash
+  ls .husky/ 2>/dev/null || npx husky init
+  ```
+
+- ensure `.husky/pre-commit` runs `npx lint-staged`
+
+#### Python
+
+Install and configure Ruff:
+
+```bash
+pip install ruff pre-commit
+```
+
+Then:
+
+- copy `assets/code-quality/config/ruff.toml` to `ruff.toml` if missing
+- copy `assets/code-quality/hooks/pre-commit` to `.pre-commit-config.yaml` if missing
+- run `pre-commit install`
+
+#### Go
+
+Install `golangci-lint` and create `.golangci.yml` if missing:
+
+```bash
+brew install golangci-lint
+```
+
+Use this baseline config:
+
+```yaml
+run:
+  timeout: 5m
+
+linters:
+  enable:
+    - gofmt
+    - goimports
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - gosimple
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters: [errcheck]
+```
+
+#### Rust
+
+Ensure the standard tooling is installed:
+
+```bash
+rustup component add rustfmt clippy
+```
+
+Create `rustfmt.toml` if missing:
+
+```toml
+edition = "2021"
+max_width = 100
+tab_spaces = 4
+```
+
+#### All Project Types
+
+Configure markdown linting:
+
+```bash
+npm install --save-dev markdownlint-cli2
+```
+
+Copy `assets/code-quality/config/.markdownlint.json` to `.markdownlint.json` if missing.
+
+Add this line to `AGENTS.md` if it is not already present:
+
+> `Code quality: run the configured formatter and linter before committing.`
+
+### 4.2 Release Workflow
+
+Use only the vendored assets in this skill:
+
+- `assets/release-workflow/config/commitlint.config.js`
+- `assets/release-workflow/workflows/commitlint-check.yml`
+- `assets/release-workflow/workflows/release.yml`
+- `assets/release-workflow/scripts/extract-release-notes.sh`
+- `assets/release-workflow/references/changelog-style-guide.md`
+
+#### Conventional Commits
+
+For Node or web projects, install commitlint locally:
+
+```bash
+npm install --save-dev \
+  @commitlint/cli \
+  @commitlint/config-conventional \
+  husky
+```
+
+Copy `assets/release-workflow/config/commitlint.config.js` to `commitlint.config.js`.
+
+Ensure `.husky/commit-msg` exists and runs:
+
+```bash
+npx --no -- commitlint --edit $1
+```
+
+For non-Node projects, copy
+`assets/release-workflow/workflows/commitlint-check.yml` to
+`.github/workflows/commitlint-check.yml`.
+
+#### Release Workflow Files
+
+Copy these files:
+
+- `assets/release-workflow/workflows/release.yml` → `.github/workflows/release.yml`
+- `assets/release-workflow/scripts/extract-release-notes.sh` → `scripts/extract-release-notes.sh`
+- `assets/release-workflow/references/changelog-style-guide.md` → `docs/changelog-style-guide.md`
+
+Then:
+
+- make `scripts/extract-release-notes.sh` executable
+- configure the tag glob in `release.yml`
+  - use `'*.*.*'` for no prefix
+  - use `'myapp-*.*.*'` if the repo already uses a tag prefix
+- configure version validation in `release.yml`
+  - `package.json` for Node or web
+  - `pyproject.toml` or existing version file for Python
+  - `Cargo.toml` for Rust
+  - skip version-file validation for tag-only Go or generic repos
+
+#### CHANGELOG.md
+
+If `CHANGELOG.md` is missing, create it with linked headers:
+
+```markdown
+# Changelog
+
+All notable changes to this project will be documented in this file.
+Versions follow [Semantic Versioning](https://semver.org).
+
+## [Unreleased](https://github.com/OWNER/REPO/compare/v0.0.0...HEAD)
+```
+
+For real releases, use this format:
+
+```markdown
+## [1.2.0](https://github.com/OWNER/REPO/compare/v1.1.0...v1.2.0) (2026-03-18)
+```
+
+Rules:
+
+- `Unreleased` must always be a linked header
+- every commit or merge to `main` must manually add a short user-facing changelog entry under `Unreleased`
+- each release header must compare the previous tag to the new tag
+- the first bold line in a release section becomes the GitHub Release title
+
+#### CONTRIBUTING.md and AGENTS.md
+
+Ensure `CONTRIBUTING.md` documents this release flow:
+
+1. every change merged to `main` must update `CHANGELOG.md`
+2. add the new entry under the `Unreleased` section before or as part of the merge commit
+3. keep `Unreleased` current throughout normal development
+4. on release day, convert the accumulated `Unreleased` notes into the new version section
+5. bump the version file if the project uses one
+6. commit the release changes
+7. tag that exact commit
+8. push the commit and tag
+
+Add this line to `AGENTS.md` if missing:
+
+> `Release: every change merged to main must update CHANGELOG.md under the Unreleased section. When the user says "release" or "ship", follow the Release Workflow section in CONTRIBUTING.md and use docs/changelog-style-guide.md for changelog editing.`
+
+#### Verification
+
+If the repo already has a version section in `CHANGELOG.md`, dry-run the extract script:
+
+```bash
+CHANGELOG_FILE=CHANGELOG.md ./scripts/extract-release-notes.sh v1.2.0
+```
+
+If the script fails, fix the changelog format before calling the release setup done.
+
+Also verify that `Unreleased` already contains ongoing development notes and is not left empty after normal feature or fix work lands on `main`.
+
+---
+
+## Step 5: CI Pipeline and GitHub Repository Setup
+
+Run this section when the user selected CI pipeline, GitHub repository setup, or both.
+
+### 5.1 CI Pipeline
+
+Use only the vendored assets in this skill:
+
+- `assets/ci-pipeline/workflows/ci-node.yml`
+- `assets/ci-pipeline/workflows/ci-python.yml`
+- `assets/ci-pipeline/workflows/ci-go.yml`
+- `assets/ci-pipeline/workflows/ci-rust.yml`
+- `assets/ci-pipeline/workflows/ci-generic.yml`
+
+Create `.github/workflows/` if needed.
+
+#### Node or Web
+
+If `package.json` exists but no lockfile exists, generate one before writing CI:
+
+```bash
+npm install
+```
+
+Copy `assets/ci-pipeline/workflows/ci-node.yml` to `.github/workflows/ci.yml`.
+
+Then customize the workflow:
+
+- set the Node matrix
+  - libraries and CLIs: `[18, 20, 22]`
+  - web apps: a single current LTS version is fine
+- set the package manager install command:
+  - `npm ci`
+  - `yarn install --frozen-lockfile`
+  - `pnpm install --frozen-lockfile`
+  - `bun install --frozen-lockfile`
+- remove or comment out the lint step if there is no `lint` script
+- remove or comment out the test step if there is no `test` script
+- remove or comment out the build step if there is no `build` script
+- if the test command cannot be inferred from `package.json`, use the `AskUserQuestion`/`request_user_input` tool explicitly
+
+#### Python
+
+Copy `assets/ci-pipeline/workflows/ci-python.yml` to `.github/workflows/ci.yml`.
+
+Then customize:
+
+- Python matrix: default to `["3.11", "3.12", "3.13"]`
+- install command: usually `pip install -e ".[dev]"` or `pip install -r requirements-dev.txt`
+- test command: usually `pytest`
+- lint command: `ruff check .` when Ruff is configured
+
+#### Go
+
+Copy `assets/ci-pipeline/workflows/ci-go.yml` to `.github/workflows/ci.yml`.
+
+Then:
+
+- set the Go version based on `go.mod`
+- keep `go test ./...`
+- keep `go build ./...`
+- if `.golangci.yml` exists, add the official golangci-lint action
+
+#### Rust
+
+Copy `assets/ci-pipeline/workflows/ci-rust.yml` to `.github/workflows/ci.yml`.
+
+Then:
+
+- keep the stable toolchain unless the project clearly requires nightly
+- keep `cargo fmt --check`, `cargo clippy`, `cargo test`, and `cargo build`
+- if security scanning is selected too, add `cargo audit` only when the user wants Rust dependency auditing in CI
+
+#### Other
+
+Copy `assets/ci-pipeline/workflows/ci-generic.yml` to `.github/workflows/ci.yml`.
+
+Then replace the placeholder install, test, lint, and build commands with the real commands.
+If the repo does not reveal them, use the `AskUserQuestion`/`request_user_input` tool explicitly.
+
+Add this line to `AGENTS.md` if missing:
+
+> `CI: keep .github/workflows/ci.yml aligned with the repository's real install, lint, test, and build commands.`
+
+### 5.2 GitHub Repository Setup
+
+Use only the vendored assets in this skill:
+
+- `assets/github-repo-setup/templates/pull-request-template.md`
+- `assets/github-repo-setup/templates/bug-report.yml`
+- `assets/github-repo-setup/templates/feature-request.yml`
+- `assets/github-repo-setup/templates/CODEOWNERS.template`
+- `assets/github-repo-setup/scripts/configure-branch-protection.sh`
+
+Before making GitHub API changes, confirm:
+
+```bash
+gh auth status
+git remote -v
+gh repo view --json nameWithOwner --jq .nameWithOwner
+```
+
+If `gh` is not installed or authenticated, guide the user to install and log in.
+
+Then:
+
+- copy the PR template to `.github/pull_request_template.md` if missing
+- copy the issue templates to `.github/ISSUE_TEMPLATE/`
+- if the issue label prefix is not obvious, use the `AskUserQuestion`/`request_user_input` tool explicitly and update `labels:` in both YAML files
+- create `.github/CODEOWNERS`
+  - use `* @username` for solo repos
+  - use directory or file-type ownership only when the repo layout clearly supports it
+  - if ownership is ambiguous, use the `AskUserQuestion`/`request_user_input` tool explicitly
+- apply branch protection to the primary branch
+  - require 1 approval
+  - dismiss stale reviews
+  - disable force pushes and deletions
+  - leave required status check contexts empty until CI has run once
+
+You can either run the vendored script after customizing it, or call `gh api` directly:
 
 ```bash
 REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+
+gh api \
+  --method PUT \
+  "repos/${REPO}/branches/main/protection" \
+  --field required_status_checks='{"strict":true,"contexts":[]}' \
+  --field enforce_admins=false \
+  --field required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true}' \
+  --field restrictions=null \
+  --field allow_force_pushes=false \
+  --field allow_deletions=false
 ```
 
-**If `release-workflow` was run** — ensure Actions can create releases:
+Add this line to `AGENTS.md` if missing:
 
-```bash
-gh api --method PUT "repos/${REPO}/actions/permissions/workflow" \
-  --field default_workflow_permissions=write \
-  --field can_approve_pull_request_reviews=true \
-  && echo "✅ Actions write permissions enabled" \
-  || echo "⚠️  Could not set Actions permissions"
-```
-
-**If `dependency-management` was run** — enable auto-merge:
-
-```bash
-gh api --method PATCH "repos/${REPO}" \
-  --field allow_auto_merge=true \
-  && echo "✅ Auto-merge enabled" \
-  || echo "⚠️  Could not enable auto-merge"
-```
-
-**If `security-scanning` was run** — attempt to enable secret scanning:
-
-```bash
-gh api --method PATCH "repos/${REPO}" \
-  --field "security_and_analysis[secret_scanning][status]=enabled" \
-  --field "security_and_analysis[secret_scanning_push_protection][status]=enabled" \
-  && echo "✅ Secret scanning enabled" \
-  || echo "⚠️  Secret scanning needs manual setup (Settings → Security & analysis)"
-```
+> `PRs: all pull requests must use the PR template (.github/pull_request_template.md). Branch protection requires at least 1 approving review before merge.`
 
 ---
 
-## Step 5: Summary
+## Step 6: Dependency Management and Security Scanning
 
+Run this section when the user selected dependency management, security scanning, or both.
+
+### 6.1 Dependency Management
+
+Use only the vendored assets in this skill:
+
+- `assets/dependency-management/config/dependabot-node.yml`
+- `assets/dependency-management/config/dependabot-python.yml`
+- `assets/dependency-management/config/dependabot-go.yml`
+- `assets/dependency-management/config/dependabot-rust.yml`
+- `assets/dependency-management/config/dependabot-generic.yml`
+- `assets/dependency-management/workflows/dependabot-auto-merge.yml`
+
+Determine every ecosystem present:
+
+- `npm` from `package.json`
+- `pip` from `pyproject.toml`, `setup.py`, or `requirements.txt`
+- `gomod` from `go.mod`
+- `cargo` from `Cargo.toml`
+- `github-actions` always
+
+Create `.github/dependabot.yml` from the matching base template, then ensure the
+`github-actions` ecosystem is also included. For polyglot repositories, merge the
+relevant sections into a single file.
+
+Use the default schedule:
+
+- weekly grouped updates
+- auto-merge only for patch and minor updates
+
+Copy `assets/dependency-management/workflows/dependabot-auto-merge.yml` to
+`.github/workflows/dependabot-auto-merge.yml`.
+
+After the workflows are pushed, enable auto-merge if the repo supports it:
+
+```bash
+REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+gh api --method PATCH "repos/${REPO}" --field allow_auto_merge=true
 ```
-✅ Setup complete for [project name] ([type] project)
 
-Configured:
-  ✅ project-scaffold    — README.md, LICENSE (MIT), .gitignore, .editorconfig, AGENTS.md + CLAUDE.md symlink
-  ✅ release-workflow    — commitlint + curated changelog flow + release.yml
-  ✅ ci-pipeline         — .github/workflows/ci.yml (Node [version] matrix)
-  ✅ code-quality        — ESLint + Prettier + lint-staged + husky pre-commit
-  ✅ github-repo-setup   — PR template + issue forms + branch protection
-  ✅ dependency-management — Dependabot weekly updates + auto-merge
-  ✅ security-scanning   — CodeQL + dependency-review
+Add this line to `AGENTS.md` if missing:
 
-GitHub settings automated:
-  ✅ Actions write permissions — release workflow can publish GitHub Releases
-  ✅ Auto-merge enabled — Dependabot patch/minor updates merge automatically
-  [✅ or ⚠️] Secret scanning — check output above
+> `Dependencies: Dependabot opens PRs for updates automatically. Patch and minor updates are auto-merged; major updates require manual review.`
 
-Manual steps remaining:
-  □ After first CI run: copy the CI check name to branch protection required checks
-  [□ if ⚠️ above] Settings → Security & analysis → Enable Secret scanning
+### 6.2 Security Scanning
+
+Use only the vendored assets in this skill:
+
+- `assets/security-scanning/workflows/codeql.yml`
+- `assets/security-scanning/workflows/dependency-review.yml`
+
+Determine the CodeQL language:
+
+- Node or web → `javascript-typescript`
+- Python → `python`
+- Go → `go`
+- Rust or other unsupported languages → skip CodeQL
+
+If CodeQL is supported:
+
+- copy `assets/security-scanning/workflows/codeql.yml` to `.github/workflows/codeql.yml`
+- update the matrix language to the detected language
+
+Always copy `assets/security-scanning/workflows/dependency-review.yml` to
+`.github/workflows/dependency-review.yml`.
+
+For Rust projects, explain that CodeQL is not supported and recommend:
+
+```bash
+cargo install cargo-audit
+cargo audit
 ```
 
-List only items relevant to the skills that were actually run. Show ⚠️ items from
-Step 4 that failed and still need manual attention.
+Secret scanning is a repo setting, not a workflow file. Guide the user:
+
+1. GitHub repo → Settings → Security & analysis
+2. Enable Secret scanning
+3. Enable Push protection when available
+
+If the repository is public, you can attempt to enable secret scanning through `gh api`:
+
+```bash
+REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+gh api --method PATCH "repos/${REPO}" \
+  --field "security_and_analysis[secret_scanning][status]=enabled" \
+  --field "security_and_analysis[secret_scanning_push_protection][status]=enabled"
+```
+
+Add this line to `AGENTS.md` if missing:
+
+> `Security: CodeQL runs on supported languages, dependency review blocks high and critical CVEs in PRs, and the Security tab must stay clean.`
+
+---
+
+## Step 7: GitHub Permissions, Commit Strategy, and Verification
+
+### 7.1 Automate GitHub Repository Settings
+
+After the selected files are committed and pushed, automate the matching GitHub settings.
+
+If release workflow was configured, ensure Actions can write releases:
+
+```bash
+REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+
+gh api --method PUT "repos/${REPO}/actions/permissions/workflow" \
+  --field default_workflow_permissions=write \
+  --field can_approve_pull_request_reviews=true
+```
+
+If dependency management was configured, ensure auto-merge is enabled:
+
+```bash
+gh api --method PATCH "repos/${REPO}" --field allow_auto_merge=true
+```
+
+If security scanning was configured, attempt secret scanning as described above,
+but report clearly when GitHub plan limits block it.
+
+### 7.2 Commit the Work
+
+Default to focused conventional commits after each selected section unless the user
+explicitly asks for one squashed setup commit.
+
+Suggested commit messages:
+
+- scaffold and repo baseline → `chore: initialize project scaffold`
+- code quality → `chore: add code quality tooling`
+- release workflow → `ci: add release workflow automation`
+- CI pipeline → `ci: add project CI pipeline`
+- GitHub repository setup → `chore: add GitHub repository configuration`
+- dependency management → `chore: add Dependabot dependency management`
+- security scanning → `ci: add security scanning workflows`
+
+### 7.3 Verify Before Declaring Success
+
+Check only the sections that were selected:
+
+- Foundation
+  - `README.md`, `LICENSE`, `.gitignore`, `.editorconfig`, and `CONTRIBUTING.md` exist
+  - `AGENTS.md` exists and `CLAUDE.md` is a symlink
+- Code quality
+  - the config files exist
+  - husky or pre-commit is installed when expected
+- Release workflow
+  - `release.yml` exists
+  - `scripts/extract-release-notes.sh` is executable
+  - `CHANGELOG.md` uses linked headers
+- CI
+  - `.github/workflows/ci.yml` matches the real install, lint, test, and build commands
+- GitHub repo setup
+  - PR template, issue forms, and `CODEOWNERS` exist
+  - branch protection was applied or the failure reason is clearly reported
+- Dependency management
+  - `.github/dependabot.yml` exists
+  - `dependabot-auto-merge.yml` exists
+- Security
+  - `codeql.yml` exists when the language is supported
+  - `dependency-review.yml` exists
+  - secret scanning follow-up steps are explicit if automation could not enable it
+
+### 7.4 Final Summary
+
+End with a concrete summary that lists only the sections that actually ran, for example:
+
+```text
+Setup complete for [project name] ([type] project)
+
+Configured
+  [x] scaffold and repo baseline
+  [x] release workflow
+  [x] CI pipeline
+  [x] code quality
+  [x] GitHub repository setup
+  [x] dependency management
+  [x] security scanning
+
+Manual follow-up
+  [ ] add required status checks to branch protection after the first CI run
+  [ ] enable secret scanning manually if GitHub plan limits blocked automation
+```
+
+Only list the relevant sections, failures, and follow-up items.

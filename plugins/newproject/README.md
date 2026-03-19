@@ -1,83 +1,89 @@
 # newproject
 
-A Claude Code plugin that sets up production-ready projects end-to-end: scaffolding,
-CI pipelines, code quality, release automation, GitHub repository configuration,
-dependency management, and security scanning.
+`newproject` is a self-contained project setup skill packaged as a Claude Code
+plugin. It can scaffold a repository from scratch or upgrade an existing project
+to a production-ready baseline with CI, code quality, release automation, GitHub
+repository setup, dependency management, and security scanning.
 
 ## What It Does
 
-The `newproject` skill orchestrates 7 specialized skills to configure everything
-a production project needs, in the correct dependency order.
+The canonical entrypoint is the standalone `newproject` skill.
+It vendors its own templates, workflows, and scripts, so it works even when no
+other `newproject` helper skills are installed.
 
-```
-project-scaffold       README, LICENSE, .gitignore, .editorconfig
-    │
-    ├── code-quality      ESLint/Prettier/Ruff + pre-commit hooks
-    │
-    ├── release-workflow  conventional commits + curated changelogs + GitHub Releases
-    │
-    ├── ci-pipeline       GitHub Actions CI with test, lint, build
-    │       │
-    │       └── security-scanning   CodeQL + dependency vulnerability review
-    │
-    ├── github-repo-setup PR template + issue forms + CODEOWNERS + branch protection
-    │
-    └── dependency-management   Dependabot grouped updates + auto-merge
+```text
+Tier 1 — Foundation
+  scaffold and repo baseline
+  release workflow
+  CI pipeline
+
+Tier 2 — Quality and Governance
+  code quality
+  GitHub repository setup
+  dependency management
+
+Tier 3 — Security
+  security scanning
 ```
 
-Each skill also works **independently** — run them standalone when you only need
-one piece.
+The plugin still bundles the older focused setup skills for compatibility and
+advanced direct use, but they are no longer required for normal `newproject`
+usage.
 
 ## Installation
+
+### Claude Code plugin
+
+```text
+/plugin marketplace add byheaven/byheaven-skills
+/plugin install newproject
+```
+
+### Codex and other skill-based tools
 
 ```bash
 npx skills add byheaven/byheaven-skills
 ```
 
+Use `newproject` directly. It is self-contained and does not rely on sibling
+setup skills being installed.
+
 ## Usage
 
 ### Full project setup
 
-Just ask Claude:
+Ask naturally:
 
-```
+```text
 Set up my new project
 /newproject
 ```
 
-Claude will detect your project type, show what's already configured, present a
-checklist, and run the selected skills in order.
+The skill detects the project type, inventories what already exists, presents a
+checklist, and applies the selected setup sections in dependency order.
 
-### Run a single skill
+### Advanced compatibility skills
 
-Just ask Claude naturally:
+The bundled helper skills remain available for users who want to apply one setup
+area in isolation:
 
-```
-Set up CI for this project
-Add Dependabot to this repo
-Set up CodeQL security scanning
-Configure ESLint and Prettier
-```
+- `project-scaffold`
+- `code-quality`
+- `release-workflow`
+- `ci-pipeline`
+- `github-repo-setup`
+- `dependency-management`
+- `security-scanning`
 
-## Skills
-
-| Skill | Purpose | Project types |
-|-------|---------|--------------|
-| `project-scaffold` | README, LICENSE, .gitignore, .editorconfig, directory structure | All |
-| `release-workflow` | conventional commits, manual curated releases, AI changelog editing | All |
-| `ci-pipeline` | GitHub Actions CI: test, lint, build, matrix strategies, caching | All |
-| `code-quality` | ESLint+Prettier, Ruff, gofmt, rustfmt, pre-commit hooks, markdownlint | Node/Web/Python/Go/Rust |
-| `github-repo-setup` | PR template, issue YAML forms, CODEOWNERS, branch protection via gh | All |
-| `dependency-management` | Dependabot grouped updates + auto-merge workflow | Node/Python/Go/Rust |
-| `security-scanning` | CodeQL, dependency vulnerability review, secret scanning guidance | All |
+These are compatibility surfaces. The supported end-to-end workflow is `newproject`.
 
 ## Supported Project Types
 
-- **Web** (Next.js, Nuxt, Astro, Remix, SvelteKit, etc.)
+- **Web** (Next.js, Nuxt, Astro, Remix, SvelteKit, and similar)
 - **Node.js** (libraries, APIs, CLIs)
-- **Python** (applications, libraries, data science)
+- **Python** (applications, libraries, data tooling)
 - **Go** (services, CLIs, libraries)
-- **Rust** (systems, CLIs, WebAssembly)
+- **Rust** (systems, CLIs, libraries)
 - **Generic** (any other language)
 
 ## License

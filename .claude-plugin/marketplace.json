@@ -14,7 +14,7 @@
     },
     {
       "name": "newproject",
-      "description": "Scaffolds and configures production-ready projects: structure, CI, linting, release automation, GitHub repository setup, dependency management, and security scanning.",
+      "description": "Self-contained end-to-end project setup packaged as a plugin and standalone skill: scaffold, CI, linting, release automation, GitHub repo setup, dependency management, and security scanning.",
       "source": "./plugins/newproject"
     }
   ]

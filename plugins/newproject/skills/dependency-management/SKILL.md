@@ -8,6 +8,9 @@ description: "Sets up Dependabot for automated dependency updates with grouped u
 Sets up Dependabot to automatically open PRs for outdated dependencies, with grouped
 updates to reduce PR noise and an auto-merge workflow for safe minor/patch updates.
 
+Compatibility note: `newproject` is the canonical standalone entrypoint for end-to-end
+setup. Use this focused skill only when you intentionally want dependency management by itself.
+
 ## Step 0: Read the Project
 
 ```bash

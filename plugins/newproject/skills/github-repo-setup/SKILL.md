@@ -8,6 +8,9 @@ description: "Configures GitHub repository settings: PR templates, issue templat
 Configures the GitHub-specific files and repository settings that make collaboration
 structured and consistent: PR templates, issue forms, CODEOWNERS, and branch protection.
 
+Compatibility note: `newproject` is the canonical standalone entrypoint for end-to-end
+setup. Use this focused skill only when you intentionally want GitHub repo setup by itself.
+
 ## Step 0: Prerequisites
 
 ```bash

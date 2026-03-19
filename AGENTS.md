@@ -94,6 +94,7 @@ When adding a new plugin, also:
 
 Follow [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions, PR guidelines, and the release workflow.
 Use [docs/changelog-style-guide.md](docs/changelog-style-guide.md) when rewriting changelog sections.
+Every change merged to `main` must update the relevant plugin `CHANGELOG.md` under `## [Unreleased]`.
 
 When the user says "release", "ship", or "发版":
 follow the Release Workflow section in CONTRIBUTING.md.

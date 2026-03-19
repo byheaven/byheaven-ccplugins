@@ -42,21 +42,25 @@ This project uses a single tag-triggered workflow for manually curated per-plugi
 
 ### How it works
 
-1. Day-to-day PRs merge into `main` normally. No Release PR is created and `CHANGELOG.md` is not rewritten automatically.
-2. When you want to release a plugin, manually edit `plugins/<name>/CHANGELOG.md` and add a new linked section header `## [x.y.z](compare-url) (YYYY-MM-DD)`.
-3. Update `## [Unreleased](compare-url)` so it points from the new tag to `HEAD`, and link the new version header from the previous plugin tag to the new plugin tag.
-4. Bump `plugins/<name>/.claude-plugin/plugin.json` to the same version.
-5. Commit those changes on `main` in one human-authored release commit.
-6. Create and push tag `<plugin>-<version>` on that same commit, for example `newproject-0.2.1`.
-7. The tag triggers `.github/workflows/release.yml`, which validates the version and changelog section, extracts the release notes, and creates or updates the GitHub Release.
+1. Day-to-day PRs merge into `main` normally.
+2. Every change merged to `main` must update `plugins/<name>/CHANGELOG.md` under `## [Unreleased](compare-url)` with a short user-facing note.
+3. No Release PR is created and `CHANGELOG.md` is not rewritten automatically for you.
+4. When you want to release a plugin, manually convert the accumulated `Unreleased` notes into a new linked version section `## [x.y.z](compare-url) (YYYY-MM-DD)`.
+5. Update `## [Unreleased](compare-url)` so it points from the new tag to `HEAD`, and link the new version header from the previous plugin tag to the new plugin tag.
+6. Bump `plugins/<name>/.claude-plugin/plugin.json` to the same version.
+7. Commit those changes on `main` in one human-authored release commit.
+8. Create and push tag `<plugin>-<version>` on that same commit, for example `newproject-0.2.1`.
+9. The tag triggers `.github/workflows/release.yml`, which validates the version and changelog section, extracts the release notes, and creates or updates the GitHub Release.
 
 ### Release checklist
 
-1. Edit `plugins/<name>/CHANGELOG.md` following [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md)
-2. Bump `plugins/<name>/.claude-plugin/plugin.json`
-3. Commit the release changes on `main`
-4. Tag that exact commit: `git tag <plugin>-<version>`
-5. Push the commit and tag: `git push origin main --follow-tags`
+1. Confirm `plugins/<name>/CHANGELOG.md` already contains the ongoing `Unreleased` notes gathered during normal development
+2. Edit `plugins/<name>/CHANGELOG.md` following [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md)
+3. Move the `Unreleased` notes into the new linked release section and reset `Unreleased` to point from the new tag to `HEAD`
+4. Bump `plugins/<name>/.claude-plugin/plugin.json`
+5. Commit the release changes on `main`
+6. Tag that exact commit: `git tag <plugin>-<version>`
+7. Push the commit and tag: `git push origin main --follow-tags`
 
 > **AI assistant users:** when the user says "release", "ship", or "发版", follow this workflow from `CONTRIBUTING.md`.
 
@@ -69,6 +73,7 @@ Key principles:
 - **User benefit first**: describe what users *get*, not what developers *did*
 - **Bold headlines**: 1–3 punchy feature titles for the most significant changes
 - **Use linked headers**: `## [x.x.x](compare-url) (YYYY-MM-DD)` for every released version
+- **Maintain `Unreleased` continuously**: every merge to `main` should add a short note under `## [Unreleased]`
 - **Omit internal changes**: `chore`, `ci`, `refactor`, `docs` should usually stay out unless they matter to plugin users
 
 See [`docs/changelog-style-guide.md`](docs/changelog-style-guide.md) for the full guide with examples.
