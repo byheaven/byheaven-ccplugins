@@ -1,6 +1,21 @@
 # Changelog
 
-## [Unreleased](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.1...HEAD)
+## [Unreleased](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.2...HEAD)
+
+## [0.5.2](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.1...newproject-0.5.2) (2026-03-19)
+
+**GitHub governance defaults are less blocking** — `newproject` now treats
+mandatory human review as opt-in, so the default branch protection no longer
+prevents Dependabot patch and minor PR auto-merge in solo-maintained repos.
+
+### Improvements
+
+- **GitHub setup** Bootstraps the standard label catalog before issue templates
+  and Dependabot config reference those labels
+- **Repository governance** Ships `CODEOWNERS.example` as an opt-in scaffold
+  instead of enabling automatic reviewer requests by default
+- **Dependabot** Updates the auto-merge workflow messaging and behavior to match
+  the new no-human-review default while keeping major updates manual
 
 ## [0.5.1](https://github.com/byheaven/byheaven-skills/compare/newproject-0.5.0...newproject-0.5.1) (2026-03-19)
 

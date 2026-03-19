@@ -30,7 +30,7 @@ Tier 1 — Foundation
 
 Tier 2 — Quality and Governance
   code quality          ESLint/Prettier or Ruff/golangci-lint/rustfmt + markdownlint
-  GitHub repo setup     PR template, issue forms, CODEOWNERS, branch protection
+  GitHub repo setup     PR template, issue forms, labels, optional CODEOWNERS, branch protection
   dependencies          Dependabot + auto-merge workflow
 
 Tier 3 — Security
@@ -45,7 +45,7 @@ All required files live inside this package:
 - `assets/quality/` — ESLint, Prettier, Ruff, markdownlint, pre-commit hook
 - `assets/ci/` — GitHub Actions CI templates
 - `assets/release/` — commitlint config, release workflow, extract script, references
-- `assets/github/` — PR template, issue forms, CODEOWNERS, branch protection script
+- `assets/github/` — PR template, issue forms, labels, CODEOWNERS template, branch protection scripts
 - `assets/dependencies/` — Dependabot templates and auto-merge workflow
 - `assets/security/` — CodeQL and dependency review workflows
 
@@ -656,6 +656,7 @@ Use only the vendored assets in this package:
 - `assets/github/templates/bug-report.yml`
 - `assets/github/templates/feature-request.yml`
 - `assets/github/templates/CODEOWNERS.template`
+- `assets/github/scripts/bootstrap-labels.sh`
 - `assets/github/scripts/configure-branch-protection.sh`
 
 Before making GitHub API changes, confirm:
@@ -670,18 +671,24 @@ If `gh` is not installed or authenticated, guide the user to install and log in.
 
 Then:
 
+- create or update the standard label catalog before any templates or Dependabot rules rely on it
+  - use `assets/github/scripts/bootstrap-labels.sh`
+  - ensure these labels exist with the vendored colors and descriptions: `bug`, `enhancement`, `needs-triage`, `dependencies`, `ci`, `major-update`, `documentation`, `security`, `release`
+  - treat label bootstrapping as idempotent: update existing labels in place instead of failing
 - copy the PR template to `.github/pull_request_template.md` if missing
 - copy the issue templates to `.github/ISSUE_TEMPLATE/`
-- if the issue label prefix is not obvious, use the `AskUserQuestion`/`request_user_input` tool explicitly and update `labels:` in both YAML files
-- create `.github/CODEOWNERS`
+- keep the issue-template labels aligned to the standard catalog unless the user explicitly asks for a different taxonomy
+- create `.github/CODEOWNERS.example` from the vendored template by default
+  - keep it as a documented opt-in scaffold and do not auto-request reviewers by default
+  - if the user explicitly wants automatic review requests, copy the customized template to `.github/CODEOWNERS` instead
   - use `* @username` for solo repos
   - use directory or file-type ownership only when the repo layout clearly supports it
   - if ownership is ambiguous, use the `AskUserQuestion`/`request_user_input` tool explicitly
 - apply branch protection to the primary branch
-  - require 1 approval
-  - dismiss stale reviews
+  - require 0 approvals by default
   - disable force pushes and deletions
   - leave required status check contexts empty until CI has run once
+  - if the user explicitly wants mandatory human approval, enable required reviews separately and only then turn on stale review dismissal
 
 You can either run the vendored script after customizing it, or call `gh api` directly:
 
@@ -693,7 +700,7 @@ gh api \
   "repos/${REPO}/branches/main/protection" \
   --field required_status_checks='{"strict":true,"contexts":[]}' \
   --field enforce_admins=false \
-  --field required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true}' \
+  --field required_pull_request_reviews=null \
   --field restrictions=null \
   --field allow_force_pushes=false \
   --field allow_deletions=false
@@ -701,7 +708,7 @@ gh api \
 
 Add this line to `AGENTS.md` if missing:
 
-> `PRs: all pull requests must use the PR template (.github/pull_request_template.md). Branch protection requires at least 1 approving review before merge.`
+> `PRs: all pull requests must use the PR template (.github/pull_request_template.md). Branch protection keeps force pushes and deletions disabled by default; add required reviews only when the team wants mandatory human approval.`
 
 ---
 
@@ -728,6 +735,11 @@ Determine every ecosystem present:
 - `cargo` from `Cargo.toml`
 - `github-actions` always
 
+Before writing `.github/dependabot.yml`, ensure the standard GitHub label catalog
+exists by running `assets/github/scripts/bootstrap-labels.sh`. This keeps the
+Dependabot `labels:` entries valid even when dependency management is configured
+without the broader GitHub repository setup section.
+
 Create `.github/dependabot.yml` from the matching base template, then ensure the
 `github-actions` ecosystem is also included. For polyglot repositories, merge the
 relevant sections into a single file.
@@ -735,7 +747,8 @@ relevant sections into a single file.
 Use the default schedule:
 
 - weekly grouped updates
-- auto-merge only for patch and minor updates
+- auto-merge only for patch and minor updates after required status checks pass
+- do not require human review by default; if the repo later opts into review requirements, bot approval is best-effort only and a human review may still be needed depending on repository policy
 
 Copy `assets/dependencies/workflows/dependabot-auto-merge.yml` to
 `.github/workflows/dependabot-auto-merge.yml`.
@@ -749,7 +762,7 @@ gh api --method PATCH "repos/${REPO}" --field allow_auto_merge=true
 
 Add this line to `AGENTS.md` if missing:
 
-> `Dependencies: Dependabot opens PRs for updates automatically. Patch and minor updates are auto-merged; major updates require manual review.`
+> `Dependencies: Dependabot opens PRs for updates automatically. Patch and minor updates are auto-merged after required status checks pass; major updates require manual review.`
 
 ### 6.2 Security Scanning
 
@@ -858,7 +871,9 @@ Check only the sections that were selected:
 - CI
   - `.github/workflows/ci.yml` matches the real install, lint, test, and build commands
 - GitHub repo setup
-  - PR template, issue forms, and `CODEOWNERS` exist
+  - the standard label catalog exists and matches every shipped label reference
+  - PR template and issue forms exist
+  - `.github/CODEOWNERS.example` exists by default, or `.github/CODEOWNERS` exists only when the user explicitly requested active automatic review assignment
   - branch protection was applied or the failure reason is clearly reported
 - Dependency management
   - `.github/dependabot.yml` exists

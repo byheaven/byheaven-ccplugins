@@ -1,5 +1,8 @@
 # .github/workflows/dependabot-auto-merge.yml
-# Auto-approves and merges Dependabot PRs for patch and minor updates.
+# Enables auto-merge for Dependabot patch and minor PRs.
+# The default newproject branch protection does not require human review.
+# If a repository later opts into review requirements, bot approval is best-effort
+# and may not satisfy repository policy on its own.
 # Major updates are left for manual review.
 #
 # Requires: Settings → General → Pull Requests → Allow auto-merge (enabled)
@@ -25,7 +28,18 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Auto-merge patch updates (safe: bug fixes and security patches only)
+      # Best-effort approval for repositories that later enable review requirements.
+      - name: Best-effort approve patch and minor updates
+        if: |
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        continue-on-error: true
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Auto-merge patch updates after required status checks pass.
       - name: Auto-merge patch updates
         if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
         run: gh pr merge --auto --merge "$PR_URL"
@@ -33,20 +47,10 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Auto-merge minor updates (safe: semver guarantees backwards compatibility)
+      # Auto-merge minor updates after required status checks pass.
       - name: Auto-merge minor updates
         if: steps.metadata.outputs.update-type == 'version-update:semver-minor'
         run: gh pr merge --auto --merge "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Auto-approve both patch and minor (required if branch protection requires review)
-      - name: Approve patch and minor updates
-        if: |
-          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-minor'
-        run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

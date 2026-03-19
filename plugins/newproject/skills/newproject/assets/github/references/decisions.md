@@ -19,6 +19,20 @@ templates in this skill make that a one-time cost.
 
 ---
 
+## Why bootstrap labels up front?
+
+The vendored issue templates and Dependabot config already reference labels.
+Creating the label catalog first avoids a half-configured repository where forms
+and bot workflows refer to labels that do not exist yet.
+
+The bootstrap step is idempotent:
+
+- missing labels are created
+- existing labels are updated to the standard colors and descriptions
+- repeated runs converge on the same baseline instead of failing
+
+---
+
 ## Why `gh api` for branch protection instead of documenting the UI?
 
 The GitHub UI for branch protection changes frequently and varies by plan tier.
@@ -43,11 +57,31 @@ check Actions tab for job names → update protection with those exact names.
 
 ---
 
-## Why `dismiss_stale_reviews: true`?
+## Why leave human review opt-in by default?
 
-When new commits are pushed to a PR after approval, the approval is dismissed.
-This prevents the "approve now, change later" pattern where a reviewer approves
-a clean PR and the author then pushes breaking changes before merging.
+The default target for `newproject` is a solo-maintained or lightly maintained
+repository. Requiring a human review by default blocks common automation flows,
+especially Dependabot patch and minor PR auto-merge.
+
+The safer default is:
+
+- require status checks
+- block force pushes and deletions
+- keep mandatory human review optional
+
+Teams that want review gates can opt in later without changing the rest of the setup.
+
+---
+
+## Why only dismiss stale reviews when review requirements are enabled?
+
+`dismiss_stale_reviews` matters only when the repository requires approvals.
+When no approval is required, enabling review-specific settings adds noise
+without changing merge policy.
+
+If a team later enables required reviews, stale review dismissal is still the
+right companion setting because it prevents the "approve now, change later"
+pattern after new commits are pushed.
 
 ---
 
@@ -65,3 +99,14 @@ vs. feature) can add multiple templates after the default is established.
 GitHub checks three locations for CODEOWNERS in this priority order:
 `.github/`, root, and `docs/`. `.github/` is the most explicit and conventional
 location for all GitHub-specific configuration files.
+
+---
+
+## Why ship `CODEOWNERS.example` instead of active `CODEOWNERS` by default?
+
+An active `CODEOWNERS` file immediately changes repository behavior by requesting
+reviewers on every matching pull request. That is useful for teams with clear
+ownership boundaries, but it is too opinionated as a default for solo repos.
+
+Shipping `CODEOWNERS.example` preserves the template and the documentation while
+keeping automatic reviewer assignment opt-in.

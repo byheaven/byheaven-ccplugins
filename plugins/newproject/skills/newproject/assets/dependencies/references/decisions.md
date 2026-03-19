@@ -38,7 +38,8 @@ existing interfaces. If your CI is passing, auto-merging minor updates is safe.
 
 The risk is that libraries don't always follow semver perfectly. Mitigating this:
 
-- CI must pass before auto-merge (GitHub's branch protection requirement)
+- Required status checks must pass before auto-merge
+- Human review remains opt-in for teams that want stricter merge policy
 - Auto-merge only runs `--merge` (not `--squash` or `--rebase`), preserving history
 
 ---

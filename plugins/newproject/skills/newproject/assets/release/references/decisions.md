@@ -77,8 +77,8 @@ Projects that need extra publish logic can append steps without changing the cor
 For this workflow to function well:
 
 - protect `main` / `master`
-- require PR reviews
 - require status checks such as tests and commitlint
+- add PR reviews when the team wants mandatory human approval
 - do not require special bot bypasses for release automation, because the release commit is human-authored
 
 ---

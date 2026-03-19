@@ -1,5 +1,7 @@
 # CODEOWNERS
-# Controls who is automatically requested for review on PRs.
+# Opt-in template for repositories that explicitly want automatic review requests.
+# The default newproject setup writes this as `.github/CODEOWNERS.example`.
+# Rename it to `.github/CODEOWNERS` only when you want GitHub to request reviewers.
 # Format: pattern  @owner-or-team
 # Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
